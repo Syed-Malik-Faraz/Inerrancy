@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+/* ── INERRANCY LUXURY THEME ── */
+@theme {
+  --color-gold: #C9A84C;
+  --color-gold-light: #E2C47A;
+  --color-gold-dark: #A07C30;
+  --color-gold-muted: rgba(201, 168, 76, 0.12);
+  --color-black: #0A0A0A;
+  --color-black-2: #111111;
+  --color-black-3: #1A1A1A;
+  --color-charcoal: #222222;
+  --color-ivory: #F5F0E8;
+  --color-ivory-2: #EDE7D9;
+  --color-luxury-red: #E05252;
+  --color-luxury-green: #52C07F;
+
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --animate-spin: spin 1s linear infinite;
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-fade-in: fadeIn 0.5s ease forwards;
+  --animate-fade-up: fadeInUp 0.6s ease forwards;
+  --animate-slide-in: slideInRight 0.4s ease forwards;
+}
+
+/* ── BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--color-black);
+  color: var(--color-ivory);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--color-black-3); }
+::-webkit-scrollbar-thumb { background: var(--color-gold-dark); border-radius: 3px; }
+
+/* ── KEYFRAMES ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+/* ── CUSTOM UTILITIES (used alongside Tailwind) ── */
+.animate-marquee { animation: marquee 30s linear infinite; }
+.animate-fade-in { animation: fadeIn 0.5s ease forwards; }
+.animate-fade-up { animation: fadeInUp 0.6s ease forwards; }
+.animate-slide-in { animation: slideInRight 0.4s ease forwards; }
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold), var(--color-gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1A1A1A 25%, #222222 50%, #1A1A1A 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Form inputs styled for luxury dark theme */
+.luxury-input {
+  @apply w-full px-4 py-3 bg-black-3 border border-gold/25 rounded text-ivory text-sm
+         transition-all duration-300 outline-none placeholder-ivory/30;
+}
+.luxury-input:focus {
+  @apply border-gold shadow-[0_0_0_3px_rgba(201,168,76,0.1)];
+}
+
+/* Product image zoom */
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 0.5s ease; }
+.img-zoom:hover img { transform: scale(1.06); }
+
+/* Nav height offset */
+.main-content { padding-top: calc(40px + 120px); min-height: calc(100vh - 400px); }
+@media (max-width: 1024px) {
+  .main-content { padding-top: calc(32px + 100px); }
+}
+
+.page-top { padding-top: calc(40px + 90px); }
+
+/* ── SPAACING SYSTEM ── */
+.section { padding-top: 6rem; padding-bottom: 6rem; }
+.section-lg { padding-top: 10rem; padding-bottom: 10rem; }
+@media (max-width: 1024px) {
+  .section { padding-top: 4rem; padding-bottom: 4rem; }
+  .section-lg { padding-top: 6rem; padding-bottom: 6rem; }
+}
+
+.container {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+@media (max-width: 768px) {
+  .container { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+
+.gold-divider {
+  height: 2px;
+  width: 60px;
+  background-color: var(--color-gold);
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  tracking: 4px;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  line-height: 1.2;
+  color: var(--color-ivory);
+  letter-spacing: -0.02em;
+}
+@media (max-width: 1024px) {
+  .section-title { font-size: 2.25rem; }
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(10,10,10,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.underline-gold {
+  position: relative;
+}
+.underline-gold::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--color-gold);
+  transition: width 0.3s ease;
+}
+.underline-gold:hover::after {
+  width: 100%;
+}
+
+/* ── DIRECTORIAL VAULT (ADMIN) SYSTEM ── */
+.container-admin {
+  @apply max-w-[1600px] mx-auto;
+}
+
+.card-vault {
+  @apply bg-black-2 border border-gold/10 rounded-3xl p-10 lg:p-14 shadow-2xl;
+}
+
+.table-vault {
+  @apply w-full border-collapse;
+}
+
+.table-vault thead th {
+  @apply text-[10px] font-bold text-gold uppercase tracking-[4px] py-10 px-8 border-b border-gold/10 text-left;
+}
+
+.table-vault tbody td {
+  @apply py-10 px-8 border-b border-gold/5 text-sm transition-all duration-300;
+}
+
+.table-vault tbody tr:hover td {
+  @apply bg-gold/5 border-gold/10;
+}
+
+.header-vault {
+  @apply space-y-6 mb-20 lg:mb-32;
+}
+
+.title-vault {
+  @apply font-heading text-5xl lg:text-8xl text-ivory tracking-wide italic;
+}
+
+.label-vault {
+  @apply text-[14px] text-ivory/30 uppercase tracking-[8px] font-bold;
+}
+
+@media (max-width: 1024px) {
+  .title-vault { font-size: 3.5rem; }
+  .label-vault { font-size: 11px; tracking: 6px; }
+  .table-vault thead th, .table-vault tbody td { @apply py-6 px-4; }
+}
