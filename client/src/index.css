@@ -98,12 +98,22 @@ button { cursor: pointer; }
 .img-zoom:hover img { transform: scale(1.06); }
 
 /* Nav height offset */
+:root { scroll-padding-top: 110px; }
 .main-content { padding-top: calc(40px + 120px); min-height: calc(100vh - 400px); }
 @media (max-width: 1024px) {
   .main-content { padding-top: calc(32px + 100px); }
 }
 
+/* Small spacing helpers to keep layout consistent across pages */
 .page-top { padding-top: calc(40px + 90px); }
+.page-spacing { padding-left: clamp(16px, 3vw, 32px); padding-right: clamp(16px, 3vw, 32px); }
+
+/* Responsive section spacing (fallback for any page that doesn't use .section/.section-lg) */
+.section-sm { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+@media (max-width: 1024px) {
+  .section-sm { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+}
+
 
 /* ── SPAACING SYSTEM ── */
 .section { padding-top: 6rem; padding-bottom: 6rem; }

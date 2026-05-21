@@ -58,14 +58,13 @@ const Navbar = () => {
           </button>
 
           {/* Center: Brand Logo */}
-          <Link to="/" className="flex flex-col items-center group">
-            {/* <span className="font-heading text-2xl lg:text-3xl tracking-[6px] text-gold group-hover:text-gold-light transition-colors">
-              INERRANCY
-            </span>
-            <span className="text-[8px] lg:text-[10px] tracking-[4px] text-gold/60 uppercase font-body mt-1">
-              Luxury Fragrances
-            </span> */}
-            <img src="/logo.jpg" alt="Logo" className="h-20 w-auto" />
+          <Link to="/" className="flex items-center justify-center group">
+            <img
+              src="/Inerrancy-logo.jpeg"
+              alt="Inerrancy Logo"
+              className="h-[56px] lg:h-20 w-auto object-contain"
+              style={{ transform: 'translateY(2px)' }}
+            />
           </Link>
 
           {/* Middle: Desktop Nav */}

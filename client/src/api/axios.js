@@ -1,4 +1,4 @@
-import axios from 'axios';
+  import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
@@ -6,12 +6,11 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor — attach access token from localStorage
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+// Request interceptor
+// NOTE: Backend uses httpOnly cookies for accessToken (see setTokenCookies + protect reads req.cookies.accessToken).
+// To avoid mismatched token transport, do not attach Authorization header from localStorage.
+api.interceptors.request.use((config) => config);
+
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -22,38 +21,38 @@ const processQueue = (error, token = null) => {
 };
 
 // Response interceptor — auto-refresh on 401
+// NOTE: backend uses httpOnly cookies, so we should NOT attach Authorization header.
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(token => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return api(originalRequest);
-        });
+        }).then(() => api(originalRequest));
       }
+
       originalRequest._retry = true;
       isRefreshing = true;
+
       try {
-        const res = await api.post('/auth/refresh-token');
-        const newToken = res.data.accessToken;
-        localStorage.setItem('accessToken', newToken);
-        processQueue(null, newToken);
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        await api.post('/auth/refresh-token');
+        processQueue(null, null);
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        localStorage.removeItem('accessToken');
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
       }
+
     }
+
     return Promise.reject(error);
   }
 );
+
 
 export default api;

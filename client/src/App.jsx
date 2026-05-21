@@ -31,6 +31,7 @@ import AdminUsersPage from './admin/pages/AdminUsersPage.jsx';
 import AdminCouponsPage from './admin/pages/AdminCouponsPage.jsx';
 import AdminReviewsPage from './admin/pages/AdminReviewsPage.jsx';
 import AdminBlogPage from './admin/pages/AdminBlogPage.jsx';
+import AdminInboxPage from './admin/pages/AdminInboxPage.jsx';
 
 // Route guards
 const PrivateRoute = ({ children }) => {
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="coupons" element={<AdminCouponsPage />} />
           <Route path="reviews" element={<AdminReviewsPage />} />
           <Route path="blog" element={<AdminBlogPage />} />
+          <Route path="inbox" element={<AdminInboxPage />} />
         </Route>
 
         {/* User Routes — with Navbar/Footer */}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, ShoppingBag, Package, Users, Ticket, 
-  MessageSquare, BookOpen, LogOut, Bell, Search, Menu, X, Settings 
+  MessageSquare, BookOpen, LogOut, Bell, Search, Menu, X, Settings, Mail
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -19,6 +19,7 @@ const AdminLayout = () => {
     { name: 'Users', path: '/admin/users', icon: Users },
     { name: 'Coupons', path: '/admin/coupons', icon: Ticket },
     { name: 'Reviews', path: '/admin/reviews', icon: MessageSquare },
+    { name: 'Inbox', path: '/admin/inbox', icon: Mail },
     { name: 'Editorial', path: '/admin/blog', icon: BookOpen },
   ];
 
@@ -82,7 +83,7 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         
         {/* Header */}
-        <header className="h-20 bg-black-2/50 backdrop-blur-md border-b border-gold/10 px-8 flex items-center justify-between sticky top-0 z-40">
+        <header className="h-20 bg-black-2/50 backdrop-blur-md border-b border-gold/10 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-6">
             <button onClick={() => setSidebarOpen(true)} className={`${sidebarOpen ? 'hidden' : 'block'} lg:hidden text-ivory`}>
               <Menu size={24} />

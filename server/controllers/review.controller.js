@@ -14,6 +14,19 @@ export const getProductReviews = async (req, res) => {
 // POST /api/reviews/:productId
 export const addReview = async (req, res) => {
   try {
+    const Order = (await import('../models/Order.model.js')).default;
+    const hasPurchased = await Order.findOne({
+      user: req.user._id,
+      'items.product': req.params.productId,
+      status: { $ne: 'cancelled' }
+    });
+    if (!hasPurchased) {
+      return res.status(403).json({
+        success: false,
+        message: 'Review verification failed. You must acquire this masterpiece before leaving feedback.'
+      });
+    }
+
     const existing = await Review.findOne({ product: req.params.productId, user: req.user._id });
     if (existing) return res.status(400).json({ success: false, message: 'You have already reviewed this product' });
 

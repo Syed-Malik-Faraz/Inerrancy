@@ -1,23 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { User, Mail, Lock, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import api from '../api/axios';
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    otp: ''
   });
   const [loading, setLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  // Timer countdown hook
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSendOtp = async () => {
+    if (!formData.phone) {
+      return toast.error('Please input a valid phone identity');
+    }
+    setOtpLoading(true);
+    try {
+      await api.post('/auth/send-otp', { phone: formData.phone });
+      setOtpSent(true);
+      setCountdown(60);
+      toast.success('Olfactory OTP key transmitted ✨ Check server logs!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to transmit OTP');
+    } finally {
+      setOtpLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -25,9 +57,15 @@ const RegisterPage = () => {
     if (formData.password !== formData.confirmPassword) {
       return toast.error('Keycodes do not match');
     }
+    if (!otpSent) {
+      return toast.error('Please initialize and verify OTP first');
+    }
+    if (!formData.otp) {
+      return toast.error('Please enter the verification key');
+    }
     setLoading(true);
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.email, formData.password, formData.phone, formData.otp);
       toast.success('Identity Registered ✨');
       navigate('/');
     } catch (err) {
@@ -111,7 +149,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="form-group">
+             <div className="form-group">
               <label className="form-label font-bold tracking-[2px]">Communication Essence (Email)</label>
               <div className="relative group">
                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/30 group-focus-within:text-gold transition-colors" size={16} />
@@ -126,6 +164,51 @@ const RegisterPage = () => {
                  />
               </div>
             </div>
+
+            <div className="form-group">
+              <label className="form-label font-bold tracking-[2px]">Olfactory Contact (Phone Number)</label>
+              <div className="flex gap-4 relative group">
+                 <div className="relative grow">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/30 font-bold text-[12px] group-focus-within:text-gold pl-4">+91</span>
+                    <input 
+                     type="tel" 
+                     name="phone"
+                     required
+                     value={formData.phone}
+                     onChange={handleInputChange}
+                     className="luxury-input pl-14 h-14"
+                     placeholder="9999999999"
+                    />
+                 </div>
+                 <button
+                   type="button"
+                   disabled={otpLoading || countdown > 0}
+                   onClick={handleSendOtp}
+                   className="btn btn-outline shrink-0 px-6 text-[10px] tracking-[2px] font-bold h-14 uppercase"
+                 >
+                   {countdown > 0 ? `Retry in ${countdown}s` : otpLoading ? 'Sending...' : otpSent ? 'Resend' : 'Send OTP'}
+                 </button>
+              </div>
+            </div>
+
+            {otpSent && (
+              <div className="form-group animate-fade-in">
+                <label className="form-label font-bold tracking-[2px]">Verification Key (OTP)</label>
+                <div className="relative group">
+                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/30 group-focus-within:text-gold transition-colors" size={16} />
+                   <input 
+                    type="text" 
+                    name="otp"
+                    required
+                    maxLength="6"
+                    value={formData.otp}
+                    onChange={handleInputChange}
+                    className="luxury-input pl-12 h-14 font-mono font-bold tracking-[6px] text-gold text-lg"
+                    placeholder="123456"
+                   />
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <div className="form-group">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, ShieldCheck, Clock } from 'lucide-react';
 import { FaInstagram, FaFacebookF, FaTwitter } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import api from '../api/axios';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -12,15 +13,18 @@ const ContactPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await api.post('/contacts', formData);
       toast.success('Message Received in Vault. Our curators will respond shortly.');
       setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to transmit message');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (

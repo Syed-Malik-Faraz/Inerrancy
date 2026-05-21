@@ -16,11 +16,14 @@ const WishlistPage = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       if (!user) return;
+      setLoading(true);
       try {
         const res = await api.get('/users/wishlist');
-        setWishlist(res.data.wishlist);
+        // API returns populated Product docs; keep only product items that have an _id
+        setWishlist((res.data.wishlist || []).filter(Boolean));
       } catch (err) {
         console.error(err);
+        setWishlist([]);
       } finally {
         setLoading(false);
       }

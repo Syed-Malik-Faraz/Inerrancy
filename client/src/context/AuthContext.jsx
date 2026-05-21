@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
     } catch {
       setUser(null);
-      localStorage.removeItem('accessToken');
     } finally {
       setLoading(false);
     }
@@ -26,21 +25,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    localStorage.setItem('accessToken', res.data.accessToken);
     setUser(res.data.user);
     return res.data.user;
   };
 
-  const register = async (name, email, password) => {
-    const res = await api.post('/auth/register', { name, email, password });
-    localStorage.setItem('accessToken', res.data.accessToken);
+  const register = async (name, email, password, phone, otp) => {
+    const res = await api.post('/auth/register', { name, email, password, phone, otp });
     setUser(res.data.user);
     return res.data.user;
   };
 
   const logout = async () => {
     try { await api.post('/auth/logout'); } catch {}
-    localStorage.removeItem('accessToken');
     setUser(null);
     toast.success('Logged out successfully');
   };
@@ -61,3 +57,4 @@ export const useAuth = () => {
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 };
+

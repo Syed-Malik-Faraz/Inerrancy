@@ -37,6 +37,11 @@ const Footer = () => {
           {/* Brand Info */}
           <div className="flex flex-col gap-8">
             <Link to="/" className="flex flex-col group">
+              <img
+                src="/Inerrancy-logo.jpeg"
+                alt="Inerrancy Logo"
+                className="h-[44px] md:h-16 w-auto mb-2 object-contain group-hover:opacity-90 transition-opacity"
+              />
               <span className="font-heading text-4xl tracking-[6px] text-gold group-hover:text-gold-light transition-colors">
                 INERRANCY
               </span>

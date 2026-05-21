@@ -73,10 +73,10 @@ const DashboardPage = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
-        <StatCard title="Revenue" value={stats?.totalRevenue || 0} prevValue={stats?.prevRevenue} icon={IndianRupee} color="gold" />
-        <StatCard title="Acquisitions" value={stats?.totalOrders || 0} prevValue={stats?.prevOrders} icon={Package} color="gold" />
-        <StatCard title="Members" value={stats?.totalUsers || 0} prevValue={stats?.prevUsers} icon={Users} color="gold" />
-        <StatCard title="Products" value={stats?.totalProducts || 0} prevValue={stats?.prevProducts} icon={ShoppingBag} color="gold" />
+        <StatCard title="Revenue" value={stats?.stats?.totalRevenue || 0} prevValue={0} icon={IndianRupee} color="gold" />
+        <StatCard title="Acquisitions" value={stats?.stats?.totalOrders || 0} prevValue={0} icon={Package} color="gold" />
+        <StatCard title="Members" value={stats?.stats?.totalUsers || 0} prevValue={0} icon={Users} color="gold" />
+        <StatCard title="Products" value={stats?.stats?.totalProducts || 0} prevValue={0} icon={ShoppingBag} color="gold" />
       </div>
 
       {/* row 2: Charts & Recent */}
@@ -93,7 +93,7 @@ const DashboardPage = () => {
            </div>
            <div className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                 <AreaChart data={stats?.salesData || []}>
+                 <AreaChart data={stats?.monthlyData || []}>
                     <defs>
                        <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#C9A84C" stopOpacity={0.3}/>
@@ -102,7 +102,7 @@ const DashboardPage = () => {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(201,168,76,0.05)" />
                     <XAxis 
-                       dataKey="date" 
+                       dataKey="month" 
                        axisLine={false} 
                        tickLine={false} 
                        tick={{fill: 'rgba(245,240,232,0.3)', fontSize: 10, fontWeight: 700}} 
@@ -117,7 +117,7 @@ const DashboardPage = () => {
                        contentStyle={{backgroundColor: '#111111', border: '1px solid rgba(201,168,76,0.2)', color: '#C9A84C', borderRadius: '8px', fontSize: '11px', textTransform: 'uppercase'}}
                        itemStyle={{color: '#C9A84C'}}
                     />
-                    <Area type="monotone" dataKey="amount" stroke="#C9A84C" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                    <Area type="monotone" dataKey="revenue" stroke="#C9A84C" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
                  </AreaChart>
               </ResponsiveContainer>
            </div>
@@ -129,22 +129,22 @@ const DashboardPage = () => {
               <h3 className="font-heading text-2xl text-ivory tracking-wide">Live Transmissions</h3>
               <Link to="/admin/orders" className="text-[10px] text-gold hover:underline uppercase tracking-widest font-bold">Archive</Link>
            </div>
-           <div className="space-y-8">
-              {stats?.recentOrders?.map((order) => (
+            <div className="space-y-8">
+              {(stats?.recentOrders || []).map((order) => (
                 <div key={order._id} className="flex gap-4 items-center group">
                    <div className="w-12 h-12 rounded-xl bg-black border border-gold/5 flex items-center justify-center shrink-0">
                       <Clock size={20} className="text-gold/30 group-hover:text-gold transition-colors" />
                    </div>
                    <div className="grow">
                       <p className="text-xs font-bold text-ivory uppercase tracking-widest">{order.user?.name || 'Guest Explorer'}</p>
-                      <p className="text-[9px] text-ivory/30 uppercase tracking-[2px] mt-1">₹{order.totalPrice} • {order.orderStatus}</p>
+                      <p className="text-[9px] text-ivory/30 uppercase tracking-[2px] mt-1">₹{order.totalAmount?.toLocaleString()} • <span className="capitalize">{order.status}</span></p>
                    </div>
-                   <Link to={`/admin/orders/${order._id}`} className="text-ivory/10 hover:text-gold transition-colors">
+                   <Link to="/admin/orders" className="text-ivory/10 hover:text-gold transition-colors">
                       <ArrowUpRight size={18} />
                    </Link>
                 </div>
               ))}
-              {stats?.recentOrders?.length === 0 && (
+              {(stats?.recentOrders || []).length === 0 && (
                 <p className="text-center text-ivory/20 text-xs py-10 italic">No recent transmissions</p>
               )}
            </div>
@@ -157,16 +157,16 @@ const DashboardPage = () => {
          <div className="bg-black-2 border border-gold/10 p-10 rounded-2xl shadow-xl animate-fade-in">
             <h3 className="font-heading text-2xl text-ivory mb-10 tracking-wide">Top Acquisitions</h3>
             <div className="space-y-6">
-               {stats?.topProducts?.map((p, i) => (
+               {(stats?.topProducts || []).map((p, i) => (
                  <div key={i} className="flex justify-between items-center pb-6 border-b border-gold/5 last:border-0">
                     <div className="flex gap-4">
                        <span className="text-gold font-heading text-xl opacity-20 w-6">0{i+1}</span>
                        <div className="flex flex-col">
                           <span className="text-xs font-bold text-ivory uppercase tracking-widest">{p.name}</span>
-                          <span className="text-[9px] text-gold font-bold uppercase tracking-[2px]">{p.brand}</span>
+                          <span className="text-[9px] text-gold font-bold uppercase tracking-[2px]">₹{p.revenue?.toLocaleString()}</span>
                        </div>
                     </div>
-                    <span className="text-xs font-bold text-ivory/60 uppercase tracking-widest">{p.sales} Sales</span>
+                    <span className="text-xs font-bold text-ivory/60 uppercase tracking-widest">{p.totalSold} Units</span>
                  </div>
                ))}
             </div>

@@ -23,6 +23,34 @@ const ProductDetailPage = () => {
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [isLiking, setIsLiking] = useState(false);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [newReview, setNewReview] = useState({ rating: 5, title: '', comment: '' });
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error('Please login to leave a review');
+      return;
+    }
+    if (!newReview.title || !newReview.comment) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    setSubmittingReview(true);
+    try {
+      const res = await api.post(`/reviews/${product._id}`, newReview);
+      toast.success('Testimonial submitted successfully! ✨');
+      setReviews([res.data.review, ...reviews]);
+      setNewReview({ rating: 5, title: '', comment: '' });
+      setReviewModalOpen(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to submit review');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -292,10 +320,21 @@ const ProductDetailPage = () => {
 
             {activeTab === 'reviews' && (
               <div className="max-w-4xl">
-                <div className="flex items-center justify-between mb-12">
-                   <h3 className="font-heading text-3xl text-ivory tracking-wide">Client Testimonials</h3>
-                   <button className="btn btn-outline btn-sm">Write Review</button>
-                </div>
+                 <div className="flex items-center justify-between mb-12">
+                    <h3 className="font-heading text-3xl text-ivory tracking-wide">Client Testimonials</h3>
+                    <button 
+                      onClick={() => {
+                        if (!user) {
+                          toast.error('Access Restricted. Please log in to leave your feedback.');
+                          return;
+                        }
+                        setReviewModalOpen(true);
+                      }}
+                      className="btn btn-outline btn-sm font-bold tracking-[2px] hover:border-gold hover:text-gold transition-colors"
+                    >
+                      Write Review
+                    </button>
+                 </div>
                 
                 {reviews.length === 0 ? (
                   <div className="py-20 text-center border border-dashed border-gold/10 rounded-lg">
@@ -350,6 +389,88 @@ const ProductDetailPage = () => {
         )}
 
       </div>
+
+      {/* Review Modal */}
+      {reviewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
+          <div className="bg-neutral-900 border border-gold/20 p-8 md:p-10 rounded-lg max-w-lg w-full relative animate-fade-in shadow-2xl">
+            <button 
+              onClick={() => setReviewModalOpen(false)}
+              className="absolute top-6 right-6 text-ivory/50 hover:text-gold text-lg transition-colors font-sans"
+            >
+              ✕
+            </button>
+            <h3 className="font-heading text-2xl text-gold mb-2 uppercase tracking-widest">Share Your Olfactory Journey</h3>
+            <p className="text-ivory/40 text-[10px] uppercase tracking-[2px] mb-8">Your feedback helps sustain the circle of excellence</p>
+            
+            <form onSubmit={handleReviewSubmit} className="space-y-6">
+              <div className="form-group">
+                <label className="form-label font-bold tracking-[2px] text-xs text-gold uppercase mb-3 block">Your Rating</label>
+                <div className="flex gap-3 text-gold">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewReview({ ...newReview, rating: star })}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="transition-transform duration-200 hover:scale-125 focus:outline-none"
+                    >
+                      <Star 
+                        size={28} 
+                        fill={(hoverRating || newReview.rating) >= star ? 'currentColor' : 'transparent'} 
+                        className={(hoverRating || newReview.rating) >= star ? 'text-gold' : 'text-charcoal'}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label font-bold tracking-[2px] text-xs text-gold uppercase mb-2 block">Review Title</label>
+                <input 
+                  type="text"
+                  required
+                  value={newReview.title}
+                  onChange={(e) => setNewReview({ ...newReview, title: e.target.value })}
+                  placeholder="e.g. Masterpiece of Liquid Gold"
+                  className="luxury-input h-12 w-full"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label font-bold tracking-[2px] text-xs text-gold uppercase mb-2 block">Detailed Testimonial</label>
+                <textarea 
+                  required
+                  rows="4"
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                  placeholder="Describe the notes, the sillage, the longevity, and your overall sensory experience..."
+                  className="luxury-input w-full p-4 h-32 bg-black/50 border border-gold/10 text-ivory placeholder-ivory/30 focus:border-gold focus:outline-none rounded"
+                />
+              </div>
+
+              <div className="pt-4 flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setReviewModalOpen(false)}
+                  className="btn btn-outline w-1/2 h-12 text-[10px] tracking-[2px] font-bold uppercase"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="btn btn-primary w-1/2 h-12 text-[10px] tracking-[2px] font-bold uppercase"
+                >
+                  {submittingReview ? 'Submitting...' : 'Submit Review'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
