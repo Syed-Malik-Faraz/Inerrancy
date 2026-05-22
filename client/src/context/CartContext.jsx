@@ -13,6 +13,8 @@ export const CartProvider = ({ children }) => {
 
   const fetchCart = useCallback(async () => {
     if (!user) { setCart({ items: [] }); return; }
+    const token = localStorage.getItem('accessToken');
+    if (!token) { setCart({ items: [] }); return; }
     try {
       const res = await api.get('/cart');
       setCart(res.data.cart || { items: [] });

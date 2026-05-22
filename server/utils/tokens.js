@@ -12,21 +12,24 @@ export const generateRefreshToken = (id) =>
   jwt.sign({ id }, REFRESH_SECRET, { expiresIn: '7d' });
 
 export const setTokenCookies = (res, accessToken, refreshToken) => {
+  const isProd = process.env.NODE_ENV === 'production';
+  // In development (localhost), don't set secure to allow cross-port cookies
+  const secure = isProd;
+  // For development with cross-port, use 'none'. For production with HTTPS, use 'none'.
+  const sameSite = 'none';
+
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure,
+    sameSite,
     path: '/',
-    // allow frontend on localhost:<vitePort> to receive cookie on http requests
-    // (Set-Cookie will still be gated by sameSite/secure, but this avoids host mismatch)
-    // Note: domain intentionally omitted.
-
     maxAge: 15 * 60 * 1000, // 15m
   });
+
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure,
+    sameSite,
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
   });

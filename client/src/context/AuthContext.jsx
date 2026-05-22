@@ -14,10 +14,12 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
     } catch {
       setUser(null);
+      localStorage.removeItem('accessToken');
     } finally {
       setLoading(false);
     }
   }, []);
+
 
   useEffect(() => {
     fetchMe();

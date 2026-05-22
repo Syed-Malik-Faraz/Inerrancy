@@ -6,12 +6,6 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor
-// NOTE: Backend uses httpOnly cookies for accessToken (see setTokenCookies + protect reads req.cookies.accessToken).
-// To avoid mismatched token transport, do not attach Authorization header from localStorage.
-api.interceptors.request.use((config) => config);
-
-
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -38,7 +32,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post('/auth/refresh-token');
+        const response = await api.post('/auth/refresh-token');
         processQueue(null, null);
         return api(originalRequest);
       } catch (err) {
