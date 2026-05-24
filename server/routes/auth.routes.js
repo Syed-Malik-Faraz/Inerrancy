@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/send-otp', sendOtp);
 router.post('/register', register);
 router.post('/login', login);
-router.post('/logout', protect, logout);
+router.post('/logout', optionalProtect, logout); // optionalProtect so logout works even with an expired access token
 router.post('/refresh-token', refreshToken);
 router.get('/me', optionalProtect, getMe);
 

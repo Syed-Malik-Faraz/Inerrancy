@@ -9,13 +9,9 @@ import upload from '../middleware/multer.middleware.js';
 
 const router = express.Router();
 
-// Admin routes
-router.get('/', protect, isAdmin, getAllUsers);
-router.get('/:id', protect, isAdmin, getUserById);
-router.put('/:id/role', protect, isAdmin, updateUserRole);
-router.delete('/:id', protect, isAdmin, deleteUser);
+// ─── Specific user routes (must come BEFORE wildcard /:id routes) ────────────
+// These paths would otherwise be matched by GET /:id or DELETE /:id first.
 
-// User routes
 router.put('/profile', protect, updateProfile);
 router.put('/password', protect, changePassword);
 router.post('/avatar', protect, upload.single('avatar'), uploadAvatar);
@@ -24,5 +20,11 @@ router.put('/address/:addressId', protect, updateAddress);
 router.delete('/address/:addressId', protect, deleteAddress);
 router.get('/wishlist', protect, getWishlist);
 router.put('/wishlist/:productId', protect, toggleWishlist);
+
+// ─── Admin wildcard routes (come LAST to avoid shadowing specific routes) ─────
+router.get('/', protect, isAdmin, getAllUsers);
+router.get('/:id', protect, isAdmin, getUserById);
+router.put('/:id/role', protect, isAdmin, updateUserRole);
+router.delete('/:id', protect, isAdmin, deleteUser);
 
 export default router;

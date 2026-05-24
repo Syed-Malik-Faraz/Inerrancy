@@ -3,16 +3,25 @@ import User from '../models/User.model.js';
 
 export const protect = async (req, res, next) => {
   try {
-    const token = req.cookies?.accessToken || req.headers.authorization?.replace('Bearer ', '');
+    // Header token takes priority over cookie — the Authorization header is
+    // explicitly set by the axios request interceptor from the in-memory /
+    // localStorage token (always current). The cookie may be stale from an
+    // older session whose Set-Cookie the browser retained past a server restart.
+    const headerToken = req.headers.authorization?.replace('Bearer ', '');
+    const cookieToken = req.cookies?.accessToken;
+    const token = headerToken || cookieToken;
+    console.log('🛡️ [PROTECT] header AT:', !!headerToken, '| cookie AT:', !!cookieToken, '| using:', token ? 'token present' : 'NO TOKEN');
+
     if (!token) return res.status(401).json({ success: false, message: 'Not authorized, no token' });
 
     const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'dev_access_secret';
     const decoded = jwt.verify(token, ACCESS_SECRET);
+    console.log('🛡️ [PROTECT] decoded user id:', decoded.id);
     req.user = await User.findById(decoded.id).select('-password -refreshToken');
     if (!req.user) return res.status(401).json({ success: false, message: 'User not found' });
     next();
   } catch (err) {
-    // Some clients may surface this as 403; keep it consistent as 401 so front-end can handle refresh.
+    console.error('🛡️ [PROTECT] error:', err.message);
     return res.status(401).json({ success: false, message: 'Token invalid or expired' });
   }
 };
@@ -20,7 +29,10 @@ export const protect = async (req, res, next) => {
 
 export const optionalProtect = async (req, res, next) => {
   try {
-    const token = req.cookies?.accessToken || req.headers.authorization?.replace('Bearer ', '');
+    // Same priority as protect — header first, cookie fallback.
+    const headerToken = req.headers.authorization?.replace('Bearer ', '');
+    const cookieToken = req.cookies?.accessToken;
+    const token = headerToken || cookieToken;
     if (token) {
       const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'dev_access_secret';
       const decoded = jwt.verify(token, ACCESS_SECRET);
@@ -28,7 +40,7 @@ export const optionalProtect = async (req, res, next) => {
     }
     next();
   } catch (err) {
-    next();
+    next(); // Token invalid/expired — continue as unauthenticated
   }
 };
 

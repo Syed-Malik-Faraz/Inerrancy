@@ -96,11 +96,15 @@ export const toggleWishlist = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     const pid = req.params.productId;
-    const idx = user.wishlist.indexOf(pid);
+    // Must use findIndex + toString() because user.wishlist contains ObjectId
+    // objects, not strings — Array.indexOf() uses strict equality so it always
+    // returns -1 when comparing ObjectId to a string.
+    const idx = user.wishlist.findIndex(id => id.toString() === pid);
     if (idx > -1) user.wishlist.splice(idx, 1);
     else user.wishlist.push(pid);
     await user.save();
-    res.json({ success: true, wishlist: user.wishlist });
+    // Return plain strings so the frontend can use Array.includes() reliably
+    res.json({ success: true, wishlist: user.wishlist.map(id => id.toString()) });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 

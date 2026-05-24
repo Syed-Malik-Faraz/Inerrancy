@@ -36,17 +36,20 @@ const RegisterPage = () => {
   };
 
   const handleSendOtp = async () => {
+    if (!formData.email) {
+      return toast.error('Please enter your email address first');
+    }
     if (!formData.phone) {
-      return toast.error('Please input a valid phone identity');
+      return toast.error('Please enter your phone number');
     }
     setOtpLoading(true);
     try {
-      await api.post('/auth/send-otp', { phone: formData.phone });
+      await api.post('/auth/send-otp', { phone: formData.phone, email: formData.email });
       setOtpSent(true);
       setCountdown(60);
-      toast.success('Olfactory OTP key transmitted ✨ Check server logs!');
+      toast.success(`Verification code sent to ${formData.email} ✨`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to transmit OTP');
+      toast.error(err.response?.data?.message || 'Failed to send OTP');
     } finally {
       setOtpLoading(false);
     }

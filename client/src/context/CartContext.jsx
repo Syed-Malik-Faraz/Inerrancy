@@ -13,12 +13,13 @@ export const CartProvider = ({ children }) => {
 
   const fetchCart = useCallback(async () => {
     if (!user) { setCart({ items: [] }); return; }
-    const token = localStorage.getItem('accessToken');
-    if (!token) { setCart({ items: [] }); return; }
     try {
       const res = await api.get('/cart');
       setCart(res.data.cart || { items: [] });
-    } catch { setCart({ items: [] }); }
+    } catch (err) {
+      console.error('Failed to fetch cart:', err);
+      setCart({ items: [] });
+    }
   }, [user]);
 
   useEffect(() => { fetchCart(); }, [fetchCart]);
@@ -40,7 +41,10 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await api.put(`/cart/${itemId}`, { qty });
       setCart(res.data.cart);
-    } catch (err) { toast.error(err.response?.data?.message || 'Update failed'); }
+    } catch (err) {
+      console.error('Failed to update item:', err);
+      toast.error(err.response?.data?.message || 'Update failed');
+    }
   };
 
   const removeItem = async (itemId) => {
@@ -48,14 +52,19 @@ export const CartProvider = ({ children }) => {
       const res = await api.delete(`/cart/${itemId}`);
       setCart(res.data.cart);
       toast.success('Item removed');
-    } catch (err) { toast.error(err.response?.data?.message || 'Remove failed'); }
+    } catch (err) {
+      console.error('Failed to remove item:', err);
+      toast.error(err.response?.data?.message || 'Remove failed');
+    }
   };
 
   const clearCart = async () => {
     try {
       await api.delete('/cart/clear');
       setCart({ items: [] });
-    } catch {}
+    } catch (err) {
+      console.error('Failed to clear cart:', err);
+    }
   };
 
   const cartCount = cart.items?.reduce((sum, i) => sum + i.qty, 0) || 0;

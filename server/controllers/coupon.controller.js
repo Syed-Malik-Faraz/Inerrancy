@@ -51,6 +51,6 @@ export const validateCoupon = async (req, res) => {
     if (coupon.discountType === 'percentage') discount = Math.round(orderAmount * coupon.discountValue / 100);
     else discount = coupon.discountValue;
 
-    res.json({ success: true, coupon, discount, message: `Coupon applied! You save ₹${discount}` });
+    res.json({ success: true, coupon, discountAmount: discount, message: `Coupon applied! You save ₹${discount}` });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
