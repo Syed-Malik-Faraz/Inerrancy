@@ -17,6 +17,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import WishlistPage from './pages/WishlistPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import BlogListPage from './pages/BlogListPage.jsx';
@@ -88,6 +89,7 @@ export default function App() {
                 <Route path="/blog/:slug" element={<BlogDetailPage />} />
                 <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
                 <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+                <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
                 <Route path="/checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
                 <Route path="/order-confirmation/:id" element={<PrivateRoute><OrderConfirmationPage /></PrivateRoute>} />
                 <Route path="/orders" element={<PrivateRoute><MyOrdersPage /></PrivateRoute>} />

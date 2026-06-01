@@ -20,8 +20,8 @@ const CartPage = () => {
               <span>/</span>
               <span className="text-gold">Your Selection</span>
             </nav>
-            <h1 className="font-heading text-4xl lg:text-5xl text-ivory">Bag Of Essence</h1>
-            <p className="text-ivory/40 text-xs tracking-wider uppercase mt-4">Review your curated olfactory collection</p>
+            <h1 className="font-heading text-4xl lg:text-5xl text-ivory">Your Bag</h1>
+            <p className="text-ivory/40 text-xs tracking-wider uppercase mt-4">Review your items before checkout</p>
           </div>
           <Link to="/shop" className="text-xs font-bold tracking-[3px] text-gold uppercase hover:underline">Continue Exploring</Link>
         </div>
@@ -64,7 +64,7 @@ const CartPage = () => {
                           onClick={() => removeItem(item._id)}
                           className="flex items-center gap-2 text-[10px] text-ivory/30 hover:text-luxury-red transition-all uppercase tracking-widest mt-4"
                         >
-                          <Trash2 size={12} /> Remove Choice
+                          <Trash2 size={12} /> Remove
                         </button>
                       </div>
                     </div>
@@ -116,7 +116,7 @@ const CartPage = () => {
                     <span className="text-ivory font-semibold text-lg">₹{cartTotal}</span>
                   </div>
                   <div className="flex justify-between items-center text-luxury-green">
-                    <span className="text-xs uppercase tracking-widest">Fragrance Discount</span>
+                    <span className="text-xs uppercase tracking-widest">Discount</span>
                     <span className="font-semibold">-₹0</span>
                   </div>
                   <div className="flex justify-between items-center">

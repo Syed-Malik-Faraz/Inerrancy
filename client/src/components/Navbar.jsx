@@ -25,6 +25,7 @@ const Navbar = () => {
         'Lattafa', 'Ahmed Al Maghribi', 'Afnan', 'Rasasi', 'Swiss Arabian', 'Khadlaj'
       ] 
     },
+
     { 
       name: 'Find Products', 
       dropdown: [
@@ -32,6 +33,7 @@ const Navbar = () => {
         { label: 'By Occasion', items: ['Party', 'Date Night', 'Daily Wear', 'Office'] },
       ]
     },
+    
     { name: 'Shop All', path: '/shop' },
     { name: 'Blog', path: '/blog' },
   ];
@@ -114,13 +116,13 @@ const Navbar = () => {
             {/* Admin Toggle (Desktop) */}
             {isAdmin && (
               <Link to="/admin" className="text-[10px] font-bold uppercase tracking-[3px] text-gold border border-gold/20 px-5 py-2 hover:bg-gold hover:text-black transition-all">
-                Vault Admin
+                Admin
               </Link>
             )}
           </div>
 
           {/* Right: Icons */}
-          <div className="flex items-center gap-4 lg:gap-6">
+          <div className="flex items-center gap-5 lg:gap-7">
             <button className="text-ivory hover:text-gold transition-colors hidden sm:block">
               <Search size={20} />
             </button>
@@ -138,26 +140,26 @@ const Navbar = () => {
                 <div className="absolute top-full right-0 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                   <div className="bg-black-2 border border-gold/20 min-w-[200px] shadow-2xl rounded-sm py-4">
                     <div className="px-6 py-3 border-b border-gold/10 mb-2">
-                       <p className="text-[9px] text-gold font-bold uppercase tracking-[3px]">Authenticated Identity</p>
+                       <p className="text-[9px] text-gold font-bold uppercase tracking-[3px]">Signed In As</p>
                        <p className="text-xs font-bold text-ivory truncate uppercase mt-1 tracking-widest">{user.name}</p>
                     </div>
-                    
+
                     <Link to="/profile" className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-ivory/60 hover:text-gold hover:bg-gold/5 transition-all">
-                       Profile Archive
+                       My Profile
                     </Link>
                     <Link to="/orders" className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-ivory/60 hover:text-gold hover:bg-gold/5 transition-all">
-                       Acquisitions
+                       My Orders
                     </Link>
                     {isAdmin && (
                       <Link to="/admin" className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-gold hover:bg-gold/5 transition-all border-t border-gold/10 mt-2">
-                         Directorial Vault
+                         Admin Panel
                       </Link>
                     )}
-                    <button 
+                    <button
                       onClick={() => { logout(); navigate('/'); }}
                       className="w-full flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-luxury-red hover:bg-luxury-red/5 transition-all border-t border-gold/10 mt-2"
                     >
-                       Relinquish Session
+                       Sign Out
                     </button>
                   </div>
                 </div>
@@ -223,7 +225,7 @@ const Navbar = () => {
                    </div>
                  </>
                ) : (
-                 <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary w-full py-4 text-[10px] font-bold tracking-[3px] uppercase mb-8">Establish Identity</Link>
+                 <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary w-full py-4 text-[10px] font-bold tracking-[3px] uppercase mb-8">Sign In</Link>
                )}
                <p className="text-[10px] text-ivory/20 uppercase tracking-[4px] font-bold mb-4">The House of Luxury</p>
                <div className="w-12 h-0.5 bg-gold/20" />

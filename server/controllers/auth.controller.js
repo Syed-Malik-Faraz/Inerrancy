@@ -1,34 +1,26 @@
 import User from '../models/User.model.js';
 import OTP from '../models/OTP.model.js';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { generateAccessToken, generateRefreshToken, setTokenCookies, clearTokenCookies } from '../utils/tokens.js';
-import { sendWelcomeEmail, sendOtpEmail } from '../config/mailer.js';
+import { sendWelcomeEmail, sendOtpEmail, sendPasswordResetEmail } from '../config/mailer.js';
+import Notification from '../models/Notification.model.js';
 
-// POST /api/auth/send-otp
+// POST /api/auth/send-otp  (registration OTP sent to email)
 export const sendOtp = async (req, res) => {
   try {
-    const { phone, email } = req.body;
-    if (!phone) return res.status(400).json({ success: false, message: 'Phone number is required' });
-    if (!email) return res.status(400).json({ success: false, message: 'Email is required to send the OTP' });
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
 
-    // Generate 6 digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Clean existing OTPs for this phone
-    await OTP.deleteMany({ phone });
+    await OTP.deleteMany({ email: email.toLowerCase().trim() });
+    await OTP.create({ email: email.toLowerCase().trim(), otp });
 
-    // Store OTP in database (auto-expires in 5 mins via TTL index)
-    await OTP.create({ phone, otp });
+    console.log(`\n🏺 [OTP] Code for ${email}: ${otp}\n`);
 
-    // Always log to console for dev visibility
-    console.log('\n🏺 =============================================');
-    console.log(`🏺 [OTP SERVICE] Code for ${email} / ${phone}:`);
-    console.log(`🏺 🔑 OTP: ${otp}`);
-    console.log('🏺 =============================================\n');
-
-    // Send OTP to user's email (non-blocking — order/flow continues even if SMTP fails)
     sendOtpEmail({ to: email, otp }).catch((err) =>
-      console.error('🏺 [OTP EMAIL] Failed to send:', err.message)
+      console.error('🏺 [OTP EMAIL] Failed:', err.message)
     );
 
     res.status(200).json({ success: true, message: 'Verification code sent to your email' });
@@ -40,36 +32,148 @@ export const sendOtp = async (req, res) => {
 // POST /api/auth/register
 export const register = async (req, res) => {
   try {
-    const { name, email, phone, password, otp } = req.body;
-    if (!name || !email || !phone || !password || !otp)
-      return res.status(400).json({ success: false, message: 'All fields are mandatory, including verification' });
+    const { name, email, password, otp } = req.body;
+    if (!name || !email || !password || !otp)
+      return res.status(400).json({ success: false, message: 'All fields are required including the verification code' });
 
-    // Verify OTP first
-    const record = await OTP.findOne({ phone, otp });
-    if (!record) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired verification key' });
-    }
+    // Verify OTP
+    const record = await OTP.findOne({ email: email.toLowerCase().trim(), otp });
+    if (!record)
+      return res.status(400).json({ success: false, message: 'Invalid or expired verification code' });
 
-    const emailExists = await User.findOne({ email });
-    if (emailExists) return res.status(400).json({ success: false, message: 'Email already registered' });
+    const emailExists = await User.findOne({ email: email.toLowerCase().trim() });
+    if (emailExists)
+      return res.status(400).json({ success: false, message: 'Email already registered' });
 
-    // Consume (delete) the OTP after verification
-    await OTP.deleteMany({ phone });
+    await OTP.deleteMany({ email: email.toLowerCase().trim() });
 
-    // Create user with phone
-    const user = await User.create({ name, email, phone, password });
+    const user = await User.create({ name, email, password });
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
     user.refreshToken = refreshToken;
     await user.save();
     setTokenCookies(res, accessToken, refreshToken);
 
-    // Send welcome email (non-blocking)
     sendWelcomeEmail({ to: email, name }).catch(console.error);
+
+    Notification.create({
+      type: 'new_user',
+      title: 'New User Registered',
+      message: `${name} (${email}) just created an account`,
+      data: { userId: user._id, userName: name, userEmail: email },
+    }).catch(console.error);
 
     res.status(201).json({ success: true, user, accessToken, refreshToken });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// POST /api/auth/forgot-password  (send reset OTP to registered email)
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email)
+      return res.status(400).json({ success: false, message: 'Email is required' });
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user)
+      return res.status(404).json({ success: false, message: 'No account found with this email' });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await OTP.deleteMany({ email: email.toLowerCase().trim() });
+    await OTP.create({ email: email.toLowerCase().trim(), otp });
+
+    console.log(`\n🏺 [RESET OTP] Code for ${email}: ${otp}\n`);
+
+    try {
+      await sendPasswordResetEmail({ to: email, otp });
+    } catch (emailErr) {
+      console.error('\n❌ [RESET EMAIL] Failed to send to', email, ':', emailErr.message, '\n');
+      return res.status(500).json({ success: false, message: `Email delivery failed: ${emailErr.message}` });
+    }
+
+    res.status(200).json({ success: true, message: 'Password reset code sent to your email' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// POST /api/auth/reset-password  (verify OTP + set new password)
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword)
+      return res.status(400).json({ success: false, message: 'Email, OTP, and new password are all required' });
+
+    if (newPassword.length < 6)
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+
+    const record = await OTP.findOne({ email: email.toLowerCase().trim(), otp });
+    if (!record)
+      return res.status(400).json({ success: false, message: 'Invalid or expired reset code' });
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user)
+      return res.status(404).json({ success: false, message: 'User not found' });
+
+    await OTP.deleteMany({ email: email.toLowerCase().trim() });
+
+    user.password = newPassword; // pre-save hook hashes it
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password reset successfully. You can now sign in.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// POST /api/auth/google  (sign in or register with Google)
+export const googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token)
+      return res.status(400).json({ success: false, message: 'Google token is required' });
+
+    // Verify the Google access token and retrieve user info
+    const googleRes = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`);
+    if (!googleRes.ok)
+      return res.status(401).json({ success: false, message: 'Invalid Google token' });
+
+    const { email, name, picture } = await googleRes.json();
+    if (!email)
+      return res.status(401).json({ success: false, message: 'Could not retrieve email from Google' });
+
+    let user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      // New user — create account with a random password they won't use
+      const randomPassword = crypto.randomBytes(32).toString('hex');
+      user = await User.create({
+        name,
+        email: email.toLowerCase(),
+        password: randomPassword,
+        avatar: picture || '',
+      });
+      sendWelcomeEmail({ to: email, name }).catch(console.error);
+      Notification.create({
+        type: 'new_user',
+        title: 'New User Registered',
+        message: `${name} (${email}) just created an account via Google`,
+        data: { userId: user._id, userName: name, userEmail: email },
+      }).catch(console.error);
+    }
+
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+    user.refreshToken = refreshToken;
+    await user.save();
+    setTokenCookies(res, accessToken, refreshToken);
+
+    res.status(200).json({ success: true, user, accessToken, refreshToken });
+  } catch (err) {
+    console.error('🏺 [GOOGLE AUTH]', err.message);
+    res.status(401).json({ success: false, message: 'Google authentication failed' });
   }
 };
 
@@ -80,8 +184,6 @@ export const login = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ success: false, message: 'Email and password required' });
 
-    // Normalize to lowercase — the schema stores emails lowercase, so a case mismatch
-    // (e.g. "User@Test.com" vs "user@test.com") would cause findOne to return null.
     const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) return res.status(401).json({ success: false, message: 'Invalid credentials' });
 
@@ -104,12 +206,9 @@ export const login = async (req, res) => {
 // POST /api/auth/logout
 export const logout = async (req, res) => {
   try {
-    // Case 1: access token was valid — optionalProtect populated req.user
     if (req.user) {
       await User.findByIdAndUpdate(req.user._id, { refreshToken: '' });
     } else {
-      // Case 2: access token is expired/missing — use the refresh token
-      // (httpOnly cookie or body) to identify the user and clear their RT.
       const rt = req.cookies?.refreshToken || req.body?.refreshToken;
       if (rt) {
         try {
@@ -117,7 +216,7 @@ export const logout = async (req, res) => {
           const decoded = jwt.verify(rt, REFRESH_SECRET);
           await User.findByIdAndUpdate(decoded.id, { refreshToken: '' });
         } catch {
-          // RT is invalid or already expired — nothing to clear in DB
+          // RT invalid or already expired
         }
       }
     }
@@ -131,10 +230,6 @@ export const logout = async (req, res) => {
 // POST /api/auth/refresh-token
 export const refreshToken = async (req, res) => {
   try {
-    // Body token takes priority — it's the token explicitly stored in localStorage
-    // during the last successful login (always in sync with the DB). The httpOnly
-    // cookie may be from an older session whose login was interrupted (e.g. nodemon
-    // restart), leaving the browser with a stale cookie that doesn't match the DB.
     const bodyToken = req.body?.refreshToken;
     const cookieToken = req.cookies?.refreshToken;
     const token = bodyToken || cookieToken;
@@ -169,7 +264,5 @@ export const refreshToken = async (req, res) => {
 
 // GET /api/auth/me
 export const getMe = async (req, res) => {
-  // Explicitly return null (not undefined) so the frontend always gets
-  // a defined value and can safely do setUser(res.data.user).
   res.json({ success: true, user: req.user || null });
 };

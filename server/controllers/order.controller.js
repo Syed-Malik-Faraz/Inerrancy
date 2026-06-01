@@ -2,6 +2,7 @@ import Order from '../models/Order.model.js';
 import Cart from '../models/Cart.model.js';
 import Product from '../models/Product.model.js';
 import Coupon from '../models/Coupon.model.js';
+import Notification from '../models/Notification.model.js';
 import { sendOrderConfirmationEmail } from '../config/mailer.js';
 
 // POST /api/orders
@@ -80,6 +81,14 @@ export const createOrder = async (req, res) => {
 
     // Clear cart
     await Cart.findOneAndDelete({ user: req.user._id });
+
+    // Admin notification
+    Notification.create({
+      type: 'new_order',
+      title: 'New Order Received',
+      message: `${req.user.name} placed an order of ₹${totalAmount}`,
+      data: { orderId: order._id, userId: req.user._id, userName: req.user.name, userEmail: req.user.email, total: totalAmount },
+    }).catch(console.error);
 
     // Send email (non-blocking)
     sendOrderConfirmationEmail({

@@ -27,8 +27,8 @@ const MyOrdersPage = () => {
     switch (status) {
       case 'Delivered': return <span className="bg-luxury-green/10 text-luxury-green text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-luxury-green/20">Delivered</span>;
       case 'Shipped': return <span className="bg-blue-500/10 text-blue-400 text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-blue-500/20">In Transit</span>;
-      case 'Processing': return <span className="bg-gold/10 text-gold text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-gold/20">Being Curated</span>;
-      case 'Cancelled': return <span className="bg-luxury-red/10 text-luxury-red text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-luxury-red/20">Voided</span>;
+      case 'Processing': return <span className="bg-gold/10 text-gold text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-gold/20">Processing</span>;
+      case 'Cancelled': return <span className="bg-luxury-red/10 text-luxury-red text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-luxury-red/20">Cancelled</span>;
       default: return <span className="bg-ivory/10 text-ivory/60 text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-ivory/20">{status}</span>;
     }
   };
@@ -44,13 +44,13 @@ const MyOrdersPage = () => {
             <nav className="flex items-center gap-2 text-[10px] tracking-widest text-ivory/30 uppercase mb-4">
               <Link to="/" className="hover:text-gold transition-colors">Home</Link>
               <span>/</span>
-              <span className="text-gold">Portfolio</span>
+              <span className="text-gold">Orders</span>
             </nav>
             <h1 className="font-heading text-4xl lg:text-5xl text-ivory">Order History</h1>
-            <p className="text-ivory/40 text-xs tracking-wider uppercase mt-4">Archive of your olfactory acquisitions</p>
+            <p className="text-ivory/40 text-xs tracking-wider uppercase mt-4">View all your past orders</p>
           </div>
-          <Link to="/shop" className="btn btn-outline min-w-[200px] group">
-            NEW ACQUISITION <ChevronRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+          <Link to="/shop" className="btn btn-outline min-w-50 group">
+            SHOP NOW <ChevronRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -59,9 +59,9 @@ const MyOrdersPage = () => {
              <div className="w-20 h-20 rounded-full bg-black flex items-center justify-center mb-8 mx-auto border border-gold/5">
                 <Package size={32} className="text-gold opacity-10" />
              </div>
-             <h3 className="font-heading text-2xl text-ivory mb-2">No Acquisitions Found</h3>
-             <p className="text-ivory/40 text-xs uppercase tracking-widest mb-10">Your personal archive is currently empty</p>
-             <Link to="/shop" className="btn btn-primary px-12">DISCOVER ESSENCES</Link>
+             <h3 className="font-heading text-2xl text-ivory mb-2">No Orders Yet</h3>
+             <p className="text-ivory/40 text-xs uppercase tracking-widest mb-10">You haven't placed any orders yet</p>
+             <Link to="/shop" className="btn btn-primary px-12">START SHOPPING</Link>
           </div>
         ) : (
           <div className="space-y-8">
@@ -72,7 +72,7 @@ const MyOrdersPage = () => {
                 <div className="p-6 md:p-8 bg-black/40 border-b border-gold/10 flex flex-col md:flex-row justify-between gap-6 md:items-center">
                   <div className="flex flex-wrap gap-8 items-center">
                     <div>
-                       <p className="text-[10px] text-ivory/30 uppercase tracking-[2px] mb-1">Acquisition ID</p>
+                       <p className="text-[10px] text-ivory/30 uppercase tracking-[2px] mb-1">Order ID</p>
                        <p className="text-xs font-bold text-gold tracking-widest">#{order._id.toUpperCase()}</p>
                     </div>
                     <div>
@@ -80,7 +80,7 @@ const MyOrdersPage = () => {
                        <p className="text-xs text-ivory/80 font-semibold uppercase">{new Date(order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
-                       <p className="text-[10px] text-ivory/30 uppercase tracking-[2px] mb-1">Total Value</p>
+                       <p className="text-[10px] text-ivory/30 uppercase tracking-[2px] mb-1">Total</p>
                        <p className="text-xs font-bold text-ivory">₹{order.totalPrice}</p>
                     </div>
                   </div>
@@ -107,7 +107,7 @@ const MyOrdersPage = () => {
                     ))}
                     <div className="flex flex-col justify-center ml-2">
                        <p className="text-xs text-ivory/80 font-heading mb-1">{order.items.length} Fragrance{order.items.length > 1 ? 's' : ''}</p>
-                       <p className="text-[10px] text-ivory/40 uppercase tracking-widest">Curated for {order.shippingAddress.city}</p>
+                       <p className="text-[10px] text-ivory/40 uppercase tracking-widest">Shipping to {order.shippingAddress.city}</p>
                     </div>
                   </div>
 
@@ -118,9 +118,9 @@ const MyOrdersPage = () => {
                         {order.isDelivered ? <CheckCircle2 size={18} /> : <Truck size={18} className="animate-pulse" />}
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-ivory uppercase tracking-widest">{order.isDelivered ? 'Delivery Complete' : 'Logistic Status'}</p>
+                        <p className="text-[10px] font-bold text-ivory uppercase tracking-widest">{order.isDelivered ? 'Delivered' : 'Delivery Status'}</p>
                         <p className="text-[10px] text-ivory/40 uppercase tracking-widest mt-1">
-                          {order.isDelivered ? `Arrived on ${new Date(order.deliveredAt).toLocaleDateString()}` : `Estimated Arrival: 3-5 Business Days`}
+                          {order.isDelivered ? `Arrived on ${new Date(order.deliveredAt).toLocaleDateString()}` : `Estimated: 3-5 Business Days`}
                         </p>
                       </div>
                     </div>

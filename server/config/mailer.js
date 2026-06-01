@@ -12,6 +12,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Verify SMTP connection on startup so errors appear in terminal immediately
+transporter.verify((error) => {
+  if (error) {
+    console.error('\n❌ [MAILER] SMTP connection FAILED:', error.message);
+    console.error('❌ [MAILER] Check EMAIL_USER and EMAIL_PASS in server/.env\n');
+  } else {
+    console.log('✅ [MAILER] SMTP connected — emails ready to send');
+  }
+});
+
 export const sendOrderConfirmationEmail = async ({ to, name, orderId, items, total, address }) => {
   const itemRows = items.map(item => `
     <tr>
@@ -107,6 +117,43 @@ export const sendOtpEmail = async ({ to, otp }) => {
     from: process.env.EMAIL_FROM || 'Inerrancy <noreply@inerrancy.com>',
     to,
     subject: `${otp} — Your Inerrancy Verification Code`,
+    html,
+  });
+};
+
+export const sendPasswordResetEmail = async ({ to, otp }) => {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"><title>Password Reset</title></head>
+    <body style="margin:0;padding:0;background:#0A0A0A;font-family:'Georgia',serif;color:#F5F0E8;">
+      <div style="max-width:520px;margin:0 auto;background:#111111;border:1px solid #C9A84C33;">
+        <div style="background:linear-gradient(135deg,#1a1a1a,#0A0A0A);padding:40px;text-align:center;border-bottom:1px solid #C9A84C44;">
+          <h1 style="color:#C9A84C;font-size:26px;letter-spacing:4px;margin:0;">INERRANCY</h1>
+          <p style="color:#C9A84C88;letter-spacing:2px;font-size:11px;margin:8px 0 0;">THE HOUSE OF LUXURY FRAGRANCES</p>
+        </div>
+        <div style="padding:48px 40px;text-align:center;">
+          <p style="color:#F5F0E8CC;font-size:13px;letter-spacing:1px;margin:0 0 8px;">PASSWORD RESET CODE</p>
+          <div style="display:inline-block;background:#C9A84C11;border:1px solid #C9A84C44;padding:24px 48px;margin:24px 0;border-radius:2px;">
+            <span style="color:#C9A84C;font-size:42px;font-weight:bold;letter-spacing:12px;font-family:monospace;">${otp}</span>
+          </div>
+          <p style="color:#F5F0E8CC;font-size:13px;line-height:1.8;margin:0;">Enter this code to reset your password.</p>
+          <p style="color:#F5F0E8CC;font-size:13px;line-height:1.8;margin:8px 0 0;">This code expires in <strong style="color:#C9A84C;">5 minutes</strong>.</p>
+          <div style="margin-top:32px;padding-top:24px;border-top:1px solid #C9A84C22;">
+            <p style="color:#C9A84C88;font-size:11px;letter-spacing:1px;margin:0;">If you did not request a password reset, please ignore this email.</p>
+          </div>
+        </div>
+        <div style="padding:20px;text-align:center;border-top:1px solid #C9A84C22;">
+          <p style="color:#C9A84C88;font-size:11px;letter-spacing:1px;margin:0;">© 2024 INERRANCY. THE HOUSE OF LUXURY FRAGRANCES</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM || 'Inerrancy <noreply@inerrancy.com>',
+    to,
+    subject: `${otp} — Reset Your Inerrancy Password`,
     html,
   });
 };

@@ -19,11 +19,11 @@ const LoginPage = () => {
     setLoading(true);
     try {
       await login(email, password);
-      toast.success('Access Granted ✨');
+      toast.success('Welcome back! ✨');
       const origin = location.state?.from?.pathname || '/';
       navigate(origin);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Identity verification failed');
+      toast.error(err.response?.data?.message || 'Incorrect email or password');
     } finally {
       setLoading(false);
     }
@@ -66,13 +66,13 @@ const LoginPage = () => {
           </div>
 
           <header className="mb-12">
-            <h1 className="font-heading text-4xl text-ivory mb-2 tracking-wide">Client Access</h1>
-            <p className="text-ivory/30 text-[11px] uppercase tracking-[3px] font-bold">Please identify yourself to access your vault</p>
+            <h1 className="font-heading text-4xl text-ivory mb-2 tracking-wide">Sign In</h1>
+            <p className="text-ivory/30 text-[11px] uppercase tracking-[3px] font-bold">Enter your email and password to continue</p>
           </header>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="form-group">
-              <label className="form-label">Email Essence</label>
+              <label className="form-label">Email Address</label>
               <div className="relative group">
                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/30 group-focus-within:text-gold transition-colors" size={16} />
                  <input 
@@ -88,8 +88,8 @@ const LoginPage = () => {
 
             <div className="form-group">
               <div className="flex justify-between items-center mb-3">
-                <label className="form-label !mb-0">Access Keycode</label>
-                <Link to="/forgot-password" size="sm" className="text-[10px] text-gold hover:underline uppercase tracking-widest font-bold">Lost your key?</Link>
+                <label className="form-label !mb-0">Password</label>
+                <Link to="/forgot-password" size="sm" className="text-[10px] text-gold hover:underline uppercase tracking-widest font-bold">Forgot password?</Link>
               </div>
               <div className="relative group">
                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/30 group-focus-within:text-gold transition-colors" size={16} />
@@ -113,7 +113,7 @@ const LoginPage = () => {
 
             <div className="flex items-center gap-3 py-2">
                <input type="checkbox" id="remember" className="w-4 h-4 bg-black border-gold/20 rounded accent-gold" />
-               <label htmlFor="remember" className="text-[10px] text-ivory/40 uppercase tracking-widest cursor-pointer select-none">Remember this terminal</label>
+               <label htmlFor="remember" className="text-[10px] text-ivory/40 uppercase tracking-widest cursor-pointer select-none">Remember me</label>
             </div>
 
             <button 
@@ -121,17 +121,17 @@ const LoginPage = () => {
               className="w-full btn btn-primary h-14 text-[12px] font-bold tracking-[6px] uppercase group mt-4 relative overflow-hidden"
             >
               <span className="relative z-10 transition-transform group-hover:-translate-x-1 inline-flex items-center gap-4">
-                 {loading ? 'CURATING ACCESS...' : (
-                   <>IDENTIFY <ArrowRight size={18} /></>
+                 {loading ? 'SIGNING IN...' : (
+                   <>SIGN IN <ArrowRight size={18} /></>
                  )}
               </span>
             </button>
           </form>
 
           <div className="mt-16 pt-10 border-t border-gold/10 text-center">
-             <p className="text-ivory/40 text-xs tracking-wider uppercase mb-6 font-light">New to our fragrance house?</p>
+             <p className="text-ivory/40 text-xs tracking-wider uppercase mb-6 font-light">Don't have an account?</p>
              <Link to="/register" className="text-[11px] font-bold text-gold tracking-[4px] uppercase border border-gold/30 px-10 py-4 hover:bg-gold-muted hover:border-gold transition-all block">
-                CREATE NEW ACCOUNT
+                CREATE ACCOUNT
              </Link>
           </div>
 

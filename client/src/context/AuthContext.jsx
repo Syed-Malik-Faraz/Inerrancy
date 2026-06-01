@@ -20,27 +20,17 @@ export const AuthProvider = ({ children }) => {
       const res = await api.get('/auth/me');
 
       if (res.data.user) {
-        // Access token is valid — user is authenticated.
         setUser(res.data.user);
       } else {
-        // /me returned no user. This means either:
-        //   (a) the user is not logged in (no tokens), or
-        //   (b) the access token is expired / was signed with a stale secret.
-        // If we have a refresh token, try to get a fresh access token now
-        // (before any other component like CartContext makes a protected request
-        // and hits a 401 mid-render).
         const rt = getRefreshToken() || localStorage.getItem('refreshToken');
         if (rt) {
           try {
             const refreshRes = await api.post('/auth/refresh-token', { refreshToken: rt });
             setAccessToken(refreshRes.data.accessToken);
             setRefreshToken(refreshRes.data.refreshToken);
-            // Retry /me with the fresh access token now in memory.
             const res2 = await api.get('/auth/me');
             setUser(res2.data.user || null);
           } catch {
-            // Refresh failed — tokens are stale, mismatched, or revoked.
-            // Clear everything so the app starts from a clean logged-out state.
             setAccessToken(null);
             setRefreshToken(null);
             setUser(null);
@@ -63,12 +53,8 @@ export const AuthProvider = ({ children }) => {
     fetchMe();
   }, [fetchMe]);
 
-  // When the axios interceptor gives up on refreshing (both tokens gone),
-  // clear user state so the UI reflects the logged-out reality.
   useEffect(() => {
-    const handleSessionExpired = () => {
-      setUser(null);
-    };
+    const handleSessionExpired = () => setUser(null);
     window.addEventListener('auth:session-expired', handleSessionExpired);
     return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
   }, []);
@@ -88,9 +74,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password, phone, otp) => {
+  // otp is sent to email; phone field removed
+  const register = async (name, email, password, otp) => {
     try {
-      const res = await api.post('/auth/register', { name, email, password, phone, otp });
+      const res = await api.post('/auth/register', { name, email, password, otp });
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
+      setUser(res.data.user);
+      return res.data.user;
+    } catch (err) {
+      setAccessToken(null);
+      setRefreshToken(null);
+      setUser(null);
+      throw err;
+    }
+  };
+
+  // token is the Google OAuth access_token from useGoogleLogin
+  const googleLogin = async (token) => {
+    try {
+      const res = await api.post('/auth/google', { token });
       setAccessToken(res.data.accessToken);
       setRefreshToken(res.data.refreshToken);
       setUser(res.data.user);
@@ -119,7 +122,7 @@ export const AuthProvider = ({ children }) => {
   const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser, isAdmin, fetchMe }}>
+    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout, updateUser, isAdmin, fetchMe }}>
       {children}
     </AuthContext.Provider>
   );

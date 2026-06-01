@@ -18,7 +18,7 @@ const Footer = () => {
       ],
     },
     {
-      title: 'Concierge',
+      title: 'Customer Care',
       links: [
         { label: 'Contact Us', path: '/contact' },
         { label: 'Shipping Policy', path: '/shipping' },
@@ -43,10 +43,10 @@ const Footer = () => {
                 className="h-[44px] md:h-16 w-auto mb-2 object-contain group-hover:opacity-90 transition-opacity"
               />
               <span className="font-heading text-4xl tracking-[6px] text-gold group-hover:text-gold-light transition-colors">
-                INERRANCY
+                INERRANCY - 
               </span>
               <span className="text-[10px] tracking-[4px] text-gold/40 uppercase font-body mt-2">
-                Middle Eastern Excellence
+                Fragrance Excellence
               </span>
             </Link>
             <p className="text-ivory/50 text-sm leading-loose max-w-sm italic font-heading">
@@ -79,19 +79,21 @@ const Footer = () => {
 
           {/* Get in Touch */}
           <div>
-            <h4 className="font-heading text-2xl text-gold mb-12 tracking-wide font-medium">Liaison</h4>
+            <h4 className="font-heading text-2xl text-gold mb-12 tracking-wide font-medium">Get in Touch</h4>
             <ul className="flex flex-col gap-6">
-              <li className="flex items-start gap-4 text-ivory/50">
+              
+              {/* <li className="flex items-start gap-4 text-ivory/50">
                 <MapPin size={18} className="text-gold mt-1 shrink-0" />
                 <span className="text-sm leading-relaxed">DLF Cyber City, Tower 10,<br />Gurgaon, HR 122002</span>
               </li>
               <li className="flex items-center gap-4 text-ivory/50">
                 <Phone size={18} className="text-gold shrink-0" />
                 <span className="text-sm">+91 82877 91303</span>
-              </li>
+              </li> */}
+
               <li className="flex items-center gap-4 text-ivory/50">
                 <Mail size={18} className="text-gold shrink-0" />
-                <span className="text-sm tracking-wider">concierge@inerrancy.in</span>
+                <span className="text-sm tracking-wider">inerrancyprivatelimited@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -99,7 +101,7 @@ const Footer = () => {
         </div>
 
         {/* Newsletter / Divider */}
-        <div className="border-y border-gold/5 py-14 flex flex-col lg:flex-row items-center justify-between gap-12">
+        {/* <div className="border-y border-gold/5 py-14 flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="flex flex-col gap-3 text-center lg:text-left">
             <h5 className="font-heading text-2xl text-ivory tracking-wide">Enter the Inerrancy Vault</h5>
             <p className="text-ivory/30 text-[10px] tracking-[4px] uppercase">Subscribe for olfactory narratives and private releases</p>
@@ -114,16 +116,16 @@ const Footer = () => {
               ENGAGE
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Legal */}
         <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2">
             <p className="text-[9px] tracking-[5px] text-ivory/20 uppercase text-center md:text-left font-bold">
-              © {currentYear} INERRANCY — THE HOUSE OF AUTHENTIC LUXURY.
+              © {currentYear} INERRANCY — THE HOUSE OF AUTHENTIC LUXURY PERFUMES
             </p>
             <p className="text-[8px] tracking-[3px] text-ivory/10 uppercase text-center md:text-left">
-              India's Premier Destination for Middle Eastern Fragrances
+              India's Premier Destination for Fragrances
             </p>
           </div>
           <div className="flex gap-10">
