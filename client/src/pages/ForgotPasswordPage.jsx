@@ -131,7 +131,7 @@ const ForgotPasswordPage = () => {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="luxury-input pl-12 h-14"
+                      className="luxury-input pl-12! h-14"
                       placeholder="name@email.com"
                     />
                   </div>
@@ -181,7 +181,7 @@ const ForgotPasswordPage = () => {
                       maxLength="6"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      className="luxury-input pl-12 h-14 font-mono font-bold tracking-[6px] text-gold text-lg"
+                      className="luxury-input pl-12! h-14 font-mono font-bold tracking-[6px] text-gold text-lg"
                       placeholder="123456"
                     />
                   </div>
@@ -196,7 +196,7 @@ const ForgotPasswordPage = () => {
                       required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="luxury-input pl-12 h-14"
+                      className="luxury-input pl-12! h-14"
                       placeholder="••••••••"
                     />
                     <button
@@ -218,7 +218,7 @@ const ForgotPasswordPage = () => {
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="luxury-input pl-12 h-14"
+                      className="luxury-input pl-12! h-14"
                       placeholder="••••••••"
                     />
                     <button

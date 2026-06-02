@@ -43,36 +43,36 @@ const DashboardPage = () => {
           <div className={`p-4 rounded-xl bg-${color}-500/10 border border-${color}-500/20 text-${color}-500`}>
             <Icon size={24} />
           </div>
-          <div className={`flex items-center gap-1 text-xs font-bold tracking-widest ${isIncrease ? 'text-luxury-green' : 'text-luxury-red'} bg-black px-2 py-1 rounded`}>
+          {/* <div className={`flex items-center gap-1 text-xs font-bold tracking-widest ${isIncrease ? 'text-luxury-green' : 'text-luxury-red'} bg-black px-2 py-1 rounded`}>
             {isIncrease ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
             {Math.abs(diff)}%
-          </div>
+          </div> */}
         </div>
-        <p className="text-[10px] font-bold text-ivory/30 uppercase tracking-[3px] mb-2">{title}</p>
+        <p className="text-[10px] font-bold text-ivory/30 uppercase tracking-[3px] mb-2 ">{title}</p>
         <h3 className="text-3xl font-bold text-ivory font-heading">{title === 'Revenue' ? '₹' : ''}{value.toLocaleString()}</h3>
       </div>
     );
   };
 
   return (
-    <div className="space-y-12 pb-20">
+    <div className="space-y-10 pb-10">
       
       <header className="header-vault">
         <div>
           <h1 className="title-vault">Vault Overview</h1>
           <p className="label-vault">Inerrancy Directorial Intelligence Dashboard</p>
         </div>
-        <div className="flex bg-black-2 border border-gold/10 rounded-lg overflow-hidden">
+        {/* <div className="flex bg-black-2 border border-gold/10 rounded-lg overflow-hidden">
            {['24h', '7d', '30d', 'All'].map(t => (
              <button key={t} className={`px-6 py-2.5 text-[10px] font-bold tracking-[2px] uppercase transition-all ${t === '30d' ? 'bg-gold text-black' : 'text-ivory/40 hover:text-gold'}`}>
                 {t}
              </button>
            ))}
-        </div>
+        </div> */}
       </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+      <div className="p-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <StatCard title="Revenue" value={stats?.stats?.totalRevenue || 0} prevValue={0} icon={IndianRupee} color="gold" />
         <StatCard title="Acquisitions" value={stats?.stats?.totalOrders || 0} prevValue={0} icon={Package} color="gold" />
         <StatCard title="Members" value={stats?.stats?.totalUsers || 0} prevValue={0} icon={Users} color="gold" />
@@ -153,8 +153,8 @@ const DashboardPage = () => {
       </div>
 
       {/* Row 3: Bottom Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-         <div className="bg-black-2 border border-gold/10 p-10 rounded-2xl shadow-xl animate-fade-in">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
+         <div className="bg-black-2 border border-gold/10 p-10 rounded-2xl shadow-xl animate-fade-in ">
             <h3 className="font-heading text-2xl text-ivory mb-10 tracking-wide">Top Acquisitions</h3>
             <div className="space-y-6">
                {(stats?.topProducts || []).map((p, i) => (
@@ -172,7 +172,7 @@ const DashboardPage = () => {
             </div>
          </div>
 
-         <div className="bg-black-2 border border-gold/10 p-10 rounded-2xl shadow-xl animate-fade-in flex flex-col justify-center items-center text-center">
+         {/* <div className="bg-black-2 border border-gold/10 p-10 rounded-2xl shadow-xl animate-fade-in flex flex-col justify-center items-center text-center">
             <div className="w-20 h-20 rounded-full border border-gold flex items-center justify-center text-gold mb-8 animate-pulse">
                <ShieldCheck size={40} />
             </div>
@@ -194,8 +194,10 @@ const DashboardPage = () => {
                   <span className="text-[8px] text-ivory/30 uppercase tracking-[2px]">Status</span>
                </div>
             </div>
-         </div>
+      
+         </div> */}
       </div>
+
 
     </div>
   );

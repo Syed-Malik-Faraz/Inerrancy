@@ -80,7 +80,7 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="luxury-input pl-12 h-14"
+                  className="luxury-input pl-12! h-14"
                   placeholder="name@luxury.com"
                  />
               </div>
@@ -98,7 +98,7 @@ const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="luxury-input pl-12 h-14"
+                  className="luxury-input pl-12! h-14"
                   placeholder="••••••••"
                  />
                  <button 

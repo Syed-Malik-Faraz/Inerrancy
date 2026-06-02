@@ -50,6 +50,8 @@ const ShopPage = () => {
 
   useEffect(() => {
     fetchBrands();
+    window.addEventListener('brands-updated', fetchBrands);
+    return () => window.removeEventListener('brands-updated', fetchBrands);
   }, []);
 
   const handleFilterChange = (key, value) => {

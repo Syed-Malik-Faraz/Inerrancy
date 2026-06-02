@@ -8,9 +8,11 @@ export const getProducts = async (req, res) => {
     const {
       page = 1, limit = 12, search, brand, category,
       fragranceFamily, occasion, collection,
-      minPrice, maxPrice, sort = '-createdAt',
-      isFeatured, inStock,
+      minPrice, maxPrice, isFeatured, inStock,
     } = req.query;
+
+    const ALLOWED_SORTS = ['-createdAt', 'createdAt', '-price', 'price', '-ratings', 'ratings'];
+    const sort = ALLOWED_SORTS.includes(req.query.sort) ? req.query.sort : '-createdAt';
 
     const query = { isActive: true };
     if (search) query.$text = { $search: search };

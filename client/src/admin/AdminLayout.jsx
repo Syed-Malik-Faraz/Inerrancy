@@ -26,7 +26,7 @@ const AdminLayout = () => {
     { name: 'Coupons', path: '/admin/coupons', icon: Ticket },
     { name: 'Reviews', path: '/admin/reviews', icon: MessageSquare },
     { name: 'Inbox', path: '/admin/inbox', icon: Mail },
-    { name: 'Editorial', path: '/admin/blog', icon: BookOpen },
+    // { name: 'Editorial', path: '/admin/blog', icon: BookOpen },
   ];
 
   const fetchUnreadCount = useCallback(async () => {
@@ -149,7 +149,7 @@ const AdminLayout = () => {
               onClick={handleLogout}
               className="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-xs font-bold tracking-[2px] uppercase text-luxury-red hover:bg-luxury-red/5 transition-all"
              >
-                <LogOut size={18} /> Resign Vault
+                <LogOut size={18} /> SignOut
              </button>
           </div>
         </div>
@@ -164,12 +164,12 @@ const AdminLayout = () => {
             <button onClick={() => setSidebarOpen(true)} className={`${sidebarOpen ? 'hidden' : 'block'} lg:hidden text-ivory`}>
               <Menu size={24} />
             </button>
-            <div className="relative group hidden md:block">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/20" size={16} />
+            <div className="relative group hidden md:block p-4">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/25 group-focus-within:text-gold/60 transition-colors duration-300" size={16} />
               <input
                 type="text"
                 placeholder="Lookup in Vault..."
-                className="bg-black border border-gold/10 pl-12 pr-4 py-2.5 rounded-lg text-xs font-semibold tracking-widest uppercase text-gold outline-none w-80 focus:border-gold/50 transition-all"
+                className="w-80 bg-black-2 border border-gold/20 pl-12 pr-5 py-2.5 rounded-lg text-[11px] font-semibold tracking-widest uppercase text-gold/80 outline-none placeholder-gold/20 focus:border-gold/50 focus:text-gold focus:bg-black-3 transition-all duration-300"
               />
             </div>
           </div>

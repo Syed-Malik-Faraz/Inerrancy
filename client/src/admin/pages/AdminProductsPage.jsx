@@ -102,7 +102,7 @@ const AdminProductsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const id = toast.loading('Synchronizing with Vault...');
+    const id = toast.loading('Adding Product...');
 
     try {
       let finalImages = [...previewImages.filter(img => typeof img === 'string')];
@@ -127,6 +127,7 @@ const AdminProductsPage = () => {
         toast.success('Masterpiece Registered', { id });
       }
 
+      window.dispatchEvent(new Event('brands-updated'));
       resetForm();
       fetchProducts();
     } catch (err) {
@@ -168,11 +169,11 @@ const AdminProductsPage = () => {
           <div className="card-vault overflow-hidden">
           <div className="flex flex-wrap gap-4 mb-16 justify-between items-center px-4">
                 <div className="relative group w-full md:w-96">
-                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/20" size={16} />
-                   <input 
-                     type="text" 
-                     placeholder="Search by name, brand, tag..." 
-                     className="bg-black border border-gold/10 pl-12 pr-4 py-3 rounded-xl text-xs font-bold tracking-[2px] uppercase text-gold outline-none w-full focus:border-gold/50"
+                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/25 group-focus-within:text-gold/60 transition-colors duration-300" size={16} />
+                   <input
+                     type="text"
+                     placeholder="Search by name, brand, tag..."
+                     className="w-full bg-black-2 border border-gold/20 pl-12 pr-5 py-3.5 rounded-xl text-[11px] font-bold tracking-[2px] uppercase text-gold/80 outline-none placeholder-gold/20 focus:border-gold/50 focus:text-gold focus:bg-black-3 transition-all duration-300"
                      value={search}
                      onChange={(e) => setSearch(e.target.value)}
                    />
@@ -391,7 +392,7 @@ const AdminProductsPage = () => {
                   disabled={loading}
                   className="grow btn btn-primary h-14 text-[12px] font-bold tracking-[6px] flex items-center justify-center gap-4"
                  >
-                    {loading ? <><div className="spinner spinner-sm !border-black" /> CURATING...</> : <><Save size={18} /> SYNCHRONIZE WITH VAULT</>}
+                    {loading ? <><div className="spinner spinner-sm !border-black" /> ADDING PRODUCT...</> : <><Save size={18} /> ADD PRODUCT</>}
                  </button>
                  <button 
                   type="button"

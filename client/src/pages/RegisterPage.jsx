@@ -183,7 +183,7 @@ const RegisterPage = () => {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="luxury-input pl-12 h-14"
+                  className="luxury-input pl-12! h-14"
                   placeholder="Aryan Malik"
                 />
               </div>
@@ -200,7 +200,7 @@ const RegisterPage = () => {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="luxury-input pl-12 h-14"
+                    className="luxury-input pl-12! h-14"
                     placeholder="name@email.com"
                   />
                 </div>
@@ -232,7 +232,7 @@ const RegisterPage = () => {
                     maxLength="6"
                     value={formData.otp}
                     onChange={handleInputChange}
-                    className="luxury-input pl-12 h-14 font-mono font-bold tracking-[6px] text-gold text-lg"
+                    className="luxury-input pl-12! h-14 font-mono font-bold tracking-[6px] text-gold text-lg"
                     placeholder="123456"
                   />
                 </div>
@@ -250,7 +250,7 @@ const RegisterPage = () => {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="luxury-input pl-12 h-14"
+                    className="luxury-input pl-12! h-14"
                     placeholder="••••••••"
                   />
                 </div>
@@ -265,7 +265,7 @@ const RegisterPage = () => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="luxury-input pl-12 h-14"
+                    className="luxury-input pl-12! h-14"
                     placeholder="••••••••"
                   />
                 </div>

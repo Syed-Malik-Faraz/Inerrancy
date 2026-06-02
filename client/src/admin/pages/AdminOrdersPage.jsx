@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Package, Search, Eye, XCircle, 
-  MapPin, Phone, Printer
+import {
+  Package, Search, Eye, XCircle,
+  MapPin, Phone, Download
 } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -21,7 +23,7 @@ const AdminOrdersPage = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const res = await api.get(`/orders?keyword=${search}`);
+      const res = await api.get(`/orders?search=${encodeURIComponent(search)}`);
       setOrders(res.data.orders || []);
     } catch (err) {
       toast.error('Failed to retrieve transmissions');
@@ -57,8 +59,58 @@ const AdminOrdersPage = () => {
     }
   };
 
-  const handlePrintInvoice = () => {
-    window.print();
+  const handleDownloadPDF = async () => {
+    const el = invoiceRef.current;
+    if (!el) return;
+
+    // Temporarily make it visible so html2canvas can render it
+    el.style.display = 'block';
+    el.style.position = 'fixed';
+    el.style.top = '-9999px';
+    el.style.left = '0';
+    el.style.width = '900px';
+    el.style.zIndex = '-1';
+
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        windowWidth: 900,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' });
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = pdf.internal.pageSize.getHeight();
+      const ratio = canvas.width / canvas.height;
+      const imgH = pdfW / ratio;
+
+      // If content is taller than one page, split across pages
+      let yOffset = 0;
+      let remaining = imgH;
+      while (remaining > 0) {
+        pdf.addImage(imgData, 'PNG', 0, yOffset === 0 ? 0 : -(imgH - remaining), pdfW, imgH);
+        remaining -= pdfH;
+        if (remaining > 0) {
+          pdf.addPage();
+          yOffset = imgH - remaining;
+        }
+      }
+
+      const orderId = viewingOrder._id.slice(-10).toUpperCase();
+      pdf.save(`Invoice_${orderId}.pdf`);
+    } catch (err) {
+      toast.error('PDF generation failed');
+      console.error(err);
+    } finally {
+      el.style.display = 'none';
+      el.style.position = '';
+      el.style.top = '';
+      el.style.left = '';
+      el.style.width = '';
+      el.style.zIndex = '';
+    }
   };
 
   // Status steps for escalation (lowercase as stored in DB)
@@ -73,24 +125,6 @@ const AdminOrdersPage = () => {
   return (
     <div className="space-y-20 lg:space-y-32 pb-20">
 
-      {/* ===== PRINT STYLES — injected into head via style tag ===== */}
-      <style>{`
-        @media print {
-          body * { visibility: hidden !important; }
-          #printable-invoice, #printable-invoice * { visibility: visible !important; }
-          #printable-invoice {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            background: white !important;
-            color: #111 !important;
-            padding: 40px !important;
-            font-family: 'Georgia', serif !important;
-          }
-        }
-      `}</style>
-
       <header className="header-vault">
         <div>
           <h1 className="title-vault">Acquisition Protocols</h1>
@@ -101,11 +135,11 @@ const AdminOrdersPage = () => {
       <div className="card-vault overflow-hidden">
         <div className="flex flex-wrap gap-4 mb-20 justify-between items-center px-4">
           <div className="relative group w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/20" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search by ID, email, or name..." 
-              className="bg-black border border-gold/10 pl-12 pr-4 py-3 rounded-xl text-xs font-bold tracking-[2px] uppercase text-gold outline-none w-full focus:border-gold/50"
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gold/25 group-focus-within:text-gold/60 transition-colors duration-300" size={16} />
+            <input
+              type="text"
+              placeholder="Search by ID, email, or name..."
+              className="w-full bg-black-2 border border-gold/20 pl-12 pr-5 py-3.5 rounded-xl text-[11px] font-bold tracking-[2px] uppercase text-gold/80 outline-none placeholder-gold/20 focus:border-gold/50 focus:text-gold focus:bg-black-3 transition-all duration-300"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -170,14 +204,14 @@ const AdminOrdersPage = () => {
                     <p className="text-[9px] text-gold font-bold uppercase tracking-[4px]">REF: #{viewingOrder._id.slice(-12).toUpperCase()}</p>
                  </div>
                  <div className="flex items-center gap-4">
-                    {/* PRINT INVOICE BUTTON */}
+                    {/* DOWNLOAD PDF BUTTON */}
                     <button
-                      onClick={handlePrintInvoice}
+                      onClick={handleDownloadPDF}
                       className="flex items-center gap-2 px-5 py-3 bg-gold text-black text-[10px] font-bold tracking-[2px] uppercase rounded-xl hover:bg-gold/90 transition-all shadow-gold"
-                      title="Print PDF Invoice"
+                      title="Download PDF Invoice"
                     >
-                      <Printer size={16} />
-                      Print Invoice
+                      <Download size={16} />
+                      Download PDF
                     </button>
                     <button onClick={() => setViewingOrder(null)} className="p-2 text-ivory/20 hover:text-gold transition-colors"><XCircle size={24} /></button>
                  </div>
@@ -288,7 +322,7 @@ const AdminOrdersPage = () => {
 
       {/* ===== PRINTABLE INVOICE (hidden on screen, visible during print) ===== */}
       {viewingOrder && (
-        <div id="printable-invoice" style={{ display: 'none' }}>
+        <div id="printable-invoice" ref={invoiceRef} style={{ display: 'none' }}>
           <div style={{ fontFamily: 'Georgia, serif', color: '#111', background: 'white', padding: '48px', maxWidth: '800px', margin: '0 auto' }}>
             {/* Invoice Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', borderBottom: '2px solid #C9A84C', paddingBottom: '24px' }}>

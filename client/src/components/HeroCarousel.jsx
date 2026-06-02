@@ -9,7 +9,7 @@ import 'swiper/css/effect-fade';
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=1600&q=80',
+    image: '/Arabian-perfume-home.jpg',
     subtitle: 'THE ART OF ARABIAN PERFUMERY',
     title: 'Middle Eastern Excellence',
     desc: 'Discover original factory-sealed masterpieces from the most prestigious houses of Dubai.',
@@ -17,7 +17,7 @@ const slides = [
     link: '/shop?category=Men',
   },
   {
-    image: 'https://images.unsplash.com/photo-1588776814546-daab30f310ce?w=1600&q=80',
+    image: '/Oud-perfume-home.jpg',
     subtitle: 'NIGHTTIME SEDUCTION',
     title: 'The Oud Collection',
     desc: 'Deep, mysterious, and profoundly luxurious. Experience the primitive power of pure oud.',
@@ -25,7 +25,7 @@ const slides = [
     link: '/shop?fragranceFamily=Woody',
   },
   {
-    image: 'https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1600&q=80',
+    image: '/Gift-set-home.jpg',
     subtitle: 'GIFTING PERFECTION',
     title: 'Ethereal Gift Sets',
     desc: 'Celebrate your loved ones with curated olfactory journeys. Elegance in every bottle.',
@@ -36,7 +36,7 @@ const slides = [
 
 const HeroCarousel = () => {
   return (
-    <div className="h-[85vh] lg:h-screen w-full relative group overflow-hidden">
+    <div className="h-[85vh] lg:h-screen w-full relative group overflow-hidden ">
       <Swiper
         modules={[Navigation, Pagination, EffectFade, Autoplay, Parallax]}
         effect="fade"

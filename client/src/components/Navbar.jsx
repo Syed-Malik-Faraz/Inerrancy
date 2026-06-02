@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, ShoppingBag, User, Heart, Menu, X, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import api from '../api/axios';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [navBrands, setNavBrands] = useState(['Lattafa', 'Ahmed Al Maghribi', 'Afnan', 'Rasasi', 'Swiss Arabian', 'Khadlaj']);
   const { user, isAdmin, logout } = useAuth();
   const { cartCount, setCartOpen } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -17,25 +22,47 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const refreshBrands = () => {
+    api.get('/products/brands').then(res => {
+      if (res.data.brands?.length) setNavBrands(res.data.brands);
+    }).catch(() => {});
+  };
+
+  useEffect(() => {
+    refreshBrands();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    window.addEventListener('brands-updated', refreshBrands);
+    return () => window.removeEventListener('brands-updated', refreshBrands);
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
   const navLinks = [
     { name: 'Home', path: '/' },
-    { 
-      name: 'Brands', 
-      dropdown: [
-        'Lattafa', 'Ahmed Al Maghribi', 'Afnan', 'Rasasi', 'Swiss Arabian', 'Khadlaj'
-      ] 
+    {
+      name: 'Brands',
+      dropdown: navBrands
     },
 
-    { 
-      name: 'Find Products', 
+    {
+      name: 'Find Products',
       dropdown: [
-        { label: 'By Fragrance', items: ['Sweet', 'Fresh', 'Woody', 'Spicy', 'Floral', 'Aqua'] },
-        { label: 'By Occasion', items: ['Party', 'Date Night', 'Daily Wear', 'Office'] },
+        { label: 'By Fragrance', paramKey: 'fragranceFamily', items: ['Sweet', 'Fresh', 'Woody', 'Spicy', 'Floral', 'Aqua'] },
+        { label: 'By Occasion', paramKey: 'occasion', items: ['Party & Evening', 'Date Night', 'Daily Wear', 'Office Wear'] },
       ]
     },
     
     { name: 'Shop All', path: '/shop' },
-    { name: 'Blog', path: '/blog' },
+    // { name: 'Blog', path: '/blog' },
   ];
 
   return (
@@ -98,7 +125,7 @@ const Navbar = () => {
                               <span className="text-[10px] text-gold font-bold block mb-2 uppercase tracking-[2px] border-b border-gold/10 pb-1">{item.label}</span>
                               <div className="grid grid-cols-1 gap-2">
                                 {item.items.map((sub, sIdx) => (
-                                  <Link key={sIdx} to={`/shop?filter=${sub}`} className="text-[11px] text-ivory/60 hover:text-gold transition-colors block">
+                                  <Link key={sIdx} to={`/shop?${item.paramKey}=${encodeURIComponent(sub)}`} className="text-[11px] text-ivory/60 hover:text-gold transition-colors block">
                                     {sub}
                                   </Link>
                                 ))}
@@ -123,7 +150,10 @@ const Navbar = () => {
 
           {/* Right: Icons */}
           <div className="flex items-center gap-5 lg:gap-7">
-            <button className="text-ivory hover:text-gold transition-colors hidden sm:block">
+            <button
+              className="text-ivory hover:text-gold transition-colors hidden sm:block"
+              onClick={() => setSearchOpen(prev => !prev)}
+            >
               <Search size={20} />
             </button>
             
@@ -188,6 +218,33 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Search Overlay */}
+        {searchOpen && (
+          <form
+            onSubmit={handleSearch}
+            className="absolute top-full left-0 w-full bg-black-2 border-b border-gold/20 px-6 py-4 animate-fade-in shadow-2xl"
+          >
+            <div className="container flex items-center gap-4">
+              <Search size={15} className="text-gold/40 shrink-0" />
+              <input
+                autoFocus
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search fragrances, brands..."
+                className="flex-1 bg-transparent text-ivory text-sm outline-none placeholder-ivory/30 tracking-wider py-1"
+              />
+              <button
+                type="button"
+                onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+                className="text-ivory/30 hover:text-gold transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </form>
+        )}
 
         {/* Mobile Drawer */}
         <div className={`fixed inset-0 bg-black/95 z-[100] transition-transform duration-500 lg:hidden ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} backdrop-blur-xl`}>

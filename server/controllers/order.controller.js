@@ -3,6 +3,7 @@ import Cart from '../models/Cart.model.js';
 import Product from '../models/Product.model.js';
 import Coupon from '../models/Coupon.model.js';
 import Notification from '../models/Notification.model.js';
+import User from '../models/User.model.js';
 import { sendOrderConfirmationEmail } from '../config/mailer.js';
 
 // POST /api/orders
@@ -130,6 +131,17 @@ export const getAllOrders = async (req, res) => {
     const { page = 1, limit = 20, status, search } = req.query;
     const query = {};
     if (status && status !== 'all') query.status = status;
+
+    if (search) {
+      const matchingUsers = await User.find({
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+        ],
+      }).select('_id');
+      query.$or = [{ user: { $in: matchingUsers.map(u => u._id) } }];
+    }
+
     const total = await Order.countDocuments(query);
     const orders = await Order.find(query)
       .populate('user', 'name email')

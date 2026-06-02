@@ -101,6 +101,7 @@ const AdminBlogPage = () => {
     setEditingId(b._id);
     setFormData({
       ...b,
+      author: b.author?.name || b.author,
       tags: Array.isArray(b.tags) ? b.tags.join(', ') : b.tags
     });
     setPreviewImage(b.image);
@@ -243,7 +244,7 @@ const AdminBlogPage = () => {
                                <div>
                                   <h4 className="text-sm font-bold text-ivory uppercase tracking-widest mb-1 group-hover:text-gold transition-colors">{b.title}</h4>
                                   <div className="flex items-center gap-3 text-[9px] text-ivory/30 uppercase tracking-[2px] font-bold">
-                                     <span className="flex items-center gap-1"><User size={10} /> {b.author}</span>
+                                     <span className="flex items-center gap-1"><User size={10} /> {b.author?.name || b.author}</span>
                                      <span>•</span>
                                      <span className="flex items-center gap-1"><Clock size={10} /> {b.readTime}</span>
                                   </div>

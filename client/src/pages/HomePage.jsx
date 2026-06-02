@@ -42,9 +42,9 @@ const HomePage = () => {
   ];
 
   const categories = [
-    { name: 'FOR HIM', link: '/shop?category=Men', bg: 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=800&q=80' },
-    { name: 'FOR HER', link: '/shop?category=Women', bg: 'https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=800&q=80' },
-    { name: 'FOR BOTH', link: '/shop?category=Unisex', bg: 'https://images.unsplash.com/photo-1588776814546-daab30f310ce?w=800&q=80' },
+    { name: 'FOR HIM', link: '/shop?category=Men', bg: '/men-perfume.jpg' },
+    { name: 'FOR HER', link: '/shop?category=Women', bg: '/woman-spraying-perfume.jpg' },
+    { name: 'FOR BOTH', link: '/shop?category=Unisex', bg: '/men-women-perfume.jpg' },
   ];
 
   return (
@@ -52,7 +52,7 @@ const HomePage = () => {
       <HeroCarousel />
 
       {/* Categories / Gender Selection */}
-      <section className="section-lg overflow-hidden !py-0">
+      <section className="section-lg overflow-hidden !py-10">
         <div className="container lg:px-0 grid grid-cols-1 md:grid-cols-3 h-[600px] md:h-[650px]">
           {categories.map((cat, i) => (
             <Link 
@@ -72,7 +72,7 @@ const HomePage = () => {
       </section>
 
       {/* Brands Scrolling Band */}
-      <section className="py-20 border-y border-gold/10 bg-black-2">
+      {/* <section className="py-20 border-y border-gold/10 bg-black-2">
         <div className="flex overflow-hidden relative">
           <div className="flex animate-marquee hover:pause whitespace-nowrap py-4">
             {[...brands, ...brands, ...brands].map((brand, i) => (
@@ -86,14 +86,14 @@ const HomePage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Featured Products */}
       <section className="section container">
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-12">
           <div className="max-w-xl">
-            <span className="section-label">THE SHARAYA DROP</span>
-            <h2 className="section-title">Middle Eastern Mastery</h2>
+            {/* <span className="section-label">THE SHARAYA DROP</span> */}
+            <h2 className="section-title">The House of Luxury Perfumes</h2>
             <div className="gold-divider" />
           </div>
           <Link to="/shop" className="btn btn-outline flex items-center gap-4 group h-14 px-8">
@@ -163,7 +163,7 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="section-sm bg-black-2 overflow-hidden border-t border-gold/10">
+      {/* <section className="section-sm bg-black-2 overflow-hidden border-t border-gold/10">
         <div className="container">
           <Swiper
             modules={[Autoplay, Pagination]}
@@ -189,7 +189,7 @@ const HomePage = () => {
             ))}
           </Swiper>
         </div>
-      </section>
+      </section> */}
 
     </div>
   );
