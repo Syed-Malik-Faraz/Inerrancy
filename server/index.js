@@ -33,6 +33,7 @@ connectDB();
 app.use(helmet({ crossOriginResourcePolicy: false }));
 
 const allowedOrigins = [
+  'https://inerrancy.vercel.app',
   'https://inerrancy.onrender.com',
   'http://localhost:5173',
   'http://localhost:5174',
