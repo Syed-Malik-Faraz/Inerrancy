@@ -31,8 +31,18 @@ connectDB();
 
 // Middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
+
+const allowedOrigins = [
+  'https://inerrancy.onrender.com',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5001',
+];
+// Allow additional origin from env (e.g. custom domain set later)
+if (process.env.CLIENT_URL) allowedOrigins.push(process.env.CLIENT_URL);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || ['http://localhost:5173','http://localhost:5174','http://localhost:5001'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 
