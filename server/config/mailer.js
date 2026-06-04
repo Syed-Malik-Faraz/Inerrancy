@@ -1,33 +1,40 @@
-import nodemailer from 'nodemailer';
-import dns from 'dns';
-import dotenv from 'dotenv';
-dotenv.config();
+const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
+const FROM = { email: 'inerrancyprivatelimited@gmail.com', name: 'Inerrancy' };
 
-// Render's network resolves hostnames to IPv6 which it can't reach — force IPv4
-dns.setDefaultResultOrder('ipv4first');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp-relay.brevo.com',
-  port: 587,
-  secure: false,
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-// Verify SMTP connection on startup so errors appear in terminal immediately
-transporter.verify((error) => {
-  if (error) {
-    console.error('\n❌ [MAILER] SMTP connection FAILED:', error.message);
-    console.error('❌ [MAILER] Check EMAIL_USER and EMAIL_PASS in server/.env\n');
-  } else {
-    console.log('✅ [MAILER] SMTP connected — emails ready to send');
+const sendEmail = async ({ to, subject, html }) => {
+  const res = await fetch(BREVO_URL, {
+    method: 'POST',
+    headers: {
+      'api-key': process.env.BREVO_API_KEY,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: FROM,
+      to: [{ email: to }],
+      subject,
+      htmlContent: html,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Brevo API error ${res.status}: ${err.message || res.statusText}`);
   }
-});
+};
+
+// Verify API key on startup — deferred so dotenv.config() in index.js runs first
+setTimeout(async () => {
+  console.log('[MAILER DEBUG] BREVO_API_KEY starts with:', process.env.BREVO_API_KEY?.substring(0, 20));
+  try {
+    const res = await fetch('https://api.brevo.com/v3/account', {
+      headers: { 'api-key': process.env.BREVO_API_KEY },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    console.log('✅ [MAILER] Brevo API connected — emails ready to send');
+  } catch (e) {
+    console.error('\n❌ [MAILER] Brevo API connection FAILED:', e.message);
+    console.error('❌ [MAILER] Check BREVO_API_KEY in server/.env\n');
+  }
+}, 0);
 
 export const sendOrderConfirmationEmail = async ({ to, name, orderId, items, total, address }) => {
   const itemRows = items.map(item => `
@@ -53,7 +60,7 @@ export const sendOrderConfirmationEmail = async ({ to, name, orderId, items, tot
           <h2 style="color:#C9A84C;margin-bottom:8px;">Order Confirmed ✨</h2>
           <p style="color:#F5F0E8CC;">Dear ${name},</p>
           <p style="color:#F5F0E8CC;">Your order <strong style="color:#C9A84C;">#${orderId}</strong> has been placed successfully. We're preparing your luxury fragrances with care.</p>
-          
+
           <table style="width:100%;border-collapse:collapse;margin:24px 0;">
             <thead>
               <tr style="background:#C9A84C22;">
@@ -65,11 +72,11 @@ export const sendOrderConfirmationEmail = async ({ to, name, orderId, items, tot
             </thead>
             <tbody>${itemRows}</tbody>
           </table>
-          
+
           <div style="text-align:right;border-top:1px solid #C9A84C44;padding-top:16px;">
             <p style="color:#F5F0E8;font-size:18px;"><strong>Total: ₹${total}</strong></p>
           </div>
-          
+
           <div style="background:#C9A84C11;border:1px solid #C9A84C33;padding:20px;margin-top:24px;">
             <h3 style="color:#C9A84C;margin:0 0 12px;font-size:14px;letter-spacing:1px;">SHIPPING TO</h3>
             <p style="margin:0;color:#F5F0E8CC;line-height:1.8;">${address}</p>
@@ -83,12 +90,7 @@ export const sendOrderConfirmationEmail = async ({ to, name, orderId, items, tot
     </html>
   `;
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || 'Inerrancy <noreply@inerrancy.com>',
-    to,
-    subject: `Order Confirmed #${orderId} — Inerrancy`,
-    html,
-  });
+  await sendEmail({ to, subject: `Order Confirmed #${orderId} — Inerrancy`, html });
 };
 
 export const sendOtpEmail = async ({ to, otp }) => {
@@ -120,12 +122,7 @@ export const sendOtpEmail = async ({ to, otp }) => {
     </body>
     </html>
   `;
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || 'Inerrancy <noreply@inerrancy.com>',
-    to,
-    subject: `${otp} — Your Inerrancy Verification Code`,
-    html,
-  });
+  await sendEmail({ to, subject: `${otp} — Your Inerrancy Verification Code`, html });
 };
 
 export const sendPasswordResetEmail = async ({ to, otp }) => {
@@ -157,12 +154,7 @@ export const sendPasswordResetEmail = async ({ to, otp }) => {
     </body>
     </html>
   `;
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || 'Inerrancy <noreply@inerrancy.com>',
-    to,
-    subject: `${otp} — Reset Your Inerrancy Password`,
-    html,
-  });
+  await sendEmail({ to, subject: `${otp} — Reset Your Inerrancy Password`, html });
 };
 
 export const sendWelcomeEmail = async ({ to, name }) => {
@@ -183,10 +175,5 @@ export const sendWelcomeEmail = async ({ to, name }) => {
     </body>
     </html>
   `;
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || 'Inerrancy <noreply@inerrancy.com>',
-    to,
-    subject: `Welcome to Inerrancy — The House of Luxury Fragrances`,
-    html,
-  });
+  await sendEmail({ to, subject: `Welcome to Inerrancy — The House of Luxury Fragrances`, html });
 };

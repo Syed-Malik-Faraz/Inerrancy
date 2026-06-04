@@ -36,7 +36,7 @@ const LoginPage = () => {
       <div className="hidden lg:flex w-1/2 relative flex-col justify-center items-center p-20 border-r border-gold/10">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1588776814546-daab30f310ce?w=1200&q=80" 
+            src="/Oud-perfume-home.jpg" 
             className="w-full h-full object-cover brightness-50 grayscale" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
