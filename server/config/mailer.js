@@ -1,15 +1,15 @@
 import nodemailer from 'nodemailer';
+import dns from 'dns';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Gmail blocks SMTP from cloud provider IPs — use Brevo SMTP relay instead.
-// Sign up free at brevo.com → Settings → SMTP & API → generate SMTP key.
-// EMAIL_USER = your Brevo login email
-// EMAIL_PASS = Brevo SMTP key (not your account password)
+// Render's network resolves hostnames to IPv6 which it can't reach — force IPv4
+dns.setDefaultResultOrder('ipv4first');
+
 const transporter = nodemailer.createTransport({
   host: 'smtp-relay.brevo.com',
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false,
   connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
