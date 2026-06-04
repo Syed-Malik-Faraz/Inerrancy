@@ -8,8 +8,8 @@ dotenv.config();
 // EMAIL_PASS = Brevo SMTP key (not your account password)
 const transporter = nodemailer.createTransport({
   host: 'smtp-relay.brevo.com',
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
   connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
