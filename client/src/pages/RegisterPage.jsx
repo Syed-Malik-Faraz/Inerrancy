@@ -103,8 +103,7 @@ const RegisterPage = () => {
       {/* Decorative Side (Desktop) */}
       <div className="hidden lg:flex w-1/2 relative flex-col justify-center items-center p-20 border-r border-gold/10 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1200&q=80"
+          <img src="Register-page.jpg"
             className="w-full h-full object-cover brightness-50 grayscale transition-transform duration-[10000ms] hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />

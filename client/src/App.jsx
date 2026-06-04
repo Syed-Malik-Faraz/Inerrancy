@@ -52,7 +52,8 @@ const AdminRoute = ({ children }) => {
 const GuestRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="page-loader"><div className="spinner" /></div>;
-  return !user ? children : <Navigate to="/" replace />;
+  if (!user) return children;
+  return <Navigate to={user.role === 'admin' ? '/admin' : '/'} replace />;
 };
 
 export default function App() {

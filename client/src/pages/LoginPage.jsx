@@ -18,8 +18,9 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      const user = await login(email, password);
       toast.success('Welcome back! ✨');
+      if (user?.role === 'admin') return navigate('/admin', { replace: true });
       const origin = location.state?.from?.pathname || '/';
       navigate(origin);
     } catch (err) {
