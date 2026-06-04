@@ -25,8 +25,8 @@ const AdminBlogPage = () => {
     isPublished: true
   });
 
-  const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     fetchBlogs();
@@ -49,11 +49,22 @@ const AdminBlogPage = () => {
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      setPreviewImage(URL.createObjectURL(file));
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const imgData = new FormData();
+      imgData.append('image', file);
+      const uploadRes = await api.post('/upload', imgData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setPreviewImage(uploadRes.data.url);
+      setFormData(prev => ({ ...prev, image: uploadRes.data.url }));
+    } catch {
+      toast.error('Image upload failed');
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -61,22 +72,10 @@ const AdminBlogPage = () => {
     e.preventDefault();
     setLoading(true);
     const id = toast.loading('Publishing to Archives...');
-    
+
     try {
-      let finalImageUrl = formData.image;
-
-      if (selectedImage) {
-        const imgData = new FormData();
-        imgData.append('image', selectedImage);
-        const uploadRes = await api.post('/upload', imgData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-        finalImageUrl = uploadRes.data.url;
-      }
-
       const blogData = {
         ...formData,
-        image: finalImageUrl,
         tags: typeof formData.tags === 'string' ? formData.tags.split(',').map(t => t.trim()) : formData.tags
       };
 
@@ -122,8 +121,8 @@ const AdminBlogPage = () => {
   const resetForm = () => {
     setEditingId(null);
     setFormData({ title: '', slug: '', content: '', excerpt: '', author: 'Inerrancy Curators', image: '', tags: '', readTime: '5 min', isPublished: true });
-    setSelectedImage(null);
     setPreviewImage(null);
+    setUploadingImage(false);
     setFormOpen(false);
   };
 
@@ -196,14 +195,15 @@ const AdminBlogPage = () => {
                        {previewImage ? (
                          <img src={previewImage} className="w-full h-full object-cover" />
                        ) : (
-                         <div className="w-full h-full flex flex-col items-center justify-center text-ivory/10 gap-3 italic">
-                            <ImageIcon size={48} />
-                            <span className="text-[10px] tracking-widest uppercase">No Image Selected</span>
-                         </div>
+                         <label className="w-full h-full flex flex-col items-center justify-center text-ivory/10 gap-3 italic cursor-pointer hover:text-ivory/30 transition-colors">
+                            {uploadingImage ? <div className="spinner spinner-sm" /> : <ImageIcon size={48} />}
+                            <span className="text-[10px] tracking-widest uppercase">{uploadingImage ? 'Uploading...' : 'Click to Upload'}</span>
+                            <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" disabled={uploadingImage} />
+                         </label>
                        )}
-                       <label className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer text-gold text-[10px] font-bold tracking-[4px] uppercase">
-                          CHANGE IMAGE
-                          <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
+                       <label className={`absolute inset-0 bg-black/60 flex items-center justify-center transition-all cursor-pointer text-gold text-[10px] font-bold tracking-[4px] uppercase ${uploadingImage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          {uploadingImage ? <div className="spinner spinner-sm" /> : 'CHANGE IMAGE'}
+                          <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" disabled={uploadingImage} />
                        </label>
                     </div>
                     <div className="flex-1 flex flex-col justify-center gap-4">

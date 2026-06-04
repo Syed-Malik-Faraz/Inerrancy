@@ -30,8 +30,8 @@ const AdminProductsPage = () => {
     notes: { top: [], middle: [], base: [] }
   });
 
-  const [images, setImages] = useState([]); // Selected files
-  const [previewImages, setPreviewImages] = useState([]); // Preview URLs
+  const [previewImages, setPreviewImages] = useState([]); // Cloudinary URLs
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -59,15 +59,25 @@ const AdminProductsPage = () => {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
-    setImages([...images, ...files]);
-    const previews = files.map(file => URL.createObjectURL(file));
-    setPreviewImages([...previewImages, ...previews]);
+    if (!files.length) return;
+    setUploadingImages(true);
+    try {
+      const formDataImages = new FormData();
+      files.forEach(img => formDataImages.append('images', img));
+      const uploadRes = await api.post('/upload/multiple', formDataImages, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setPreviewImages(prev => [...prev, ...uploadRes.data.urls]);
+    } catch {
+      toast.error('Image upload failed');
+    } finally {
+      setUploadingImages(false);
+    }
   };
 
   const removeImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
     setPreviewImages(previewImages.filter((_, i) => i !== index));
   };
 
@@ -94,8 +104,8 @@ const AdminProductsPage = () => {
       collection: 'Best Sellers', stock: '', isFeatured: false,
       notes: { top: [], middle: [], base: [] }
     });
-    setImages([]);
     setPreviewImages([]);
+    setUploadingImages(false);
     setFormOpen(false);
   };
 
@@ -105,19 +115,7 @@ const AdminProductsPage = () => {
     const id = toast.loading('Adding Product...');
 
     try {
-      let finalImages = [...previewImages.filter(img => typeof img === 'string')];
-
-      // Upload new images if any
-      if (images.length > 0) {
-        const formDataImages = new FormData();
-        images.forEach(img => formDataImages.append('images', img));
-        const uploadRes = await api.post('/upload/multiple', formDataImages, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-        finalImages = [...finalImages, ...uploadRes.data.urls];
-      }
-
-      const productToSave = { ...formData, images: finalImages };
+      const productToSave = { ...formData, images: previewImages };
 
       if (editingId) {
         await api.put(`/products/${editingId}`, productToSave);
@@ -378,10 +376,10 @@ const AdminProductsPage = () => {
                          </button>
                       </div>
                     ))}
-                    <label className="aspect-square rounded-xl border-2 border-dashed border-gold/20 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-gold-muted/10 hover:border-gold/50 transition-all text-gold group">
-                       <ImageIcon size={32} className="opacity-20 group-hover:opacity-100 transition-opacity" />
-                       <span className="text-[9px] font-bold uppercase tracking-[2px]">UPLOAD ASSET</span>
-                       <input type="file" multiple className="hidden" onChange={handleImageChange} accept="image/*" />
+                    <label className={`aspect-square rounded-xl border-2 border-dashed border-gold/20 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-gold-muted/10 hover:border-gold/50 transition-all text-gold group ${uploadingImages ? 'opacity-50 pointer-events-none' : ''}`}>
+                       {uploadingImages ? <div className="spinner spinner-sm" /> : <ImageIcon size={32} className="opacity-20 group-hover:opacity-100 transition-opacity" />}
+                       <span className="text-[9px] font-bold uppercase tracking-[2px]">{uploadingImages ? 'UPLOADING...' : 'UPLOAD ASSET'}</span>
+                       <input type="file" multiple className="hidden" onChange={handleImageChange} accept="image/*" disabled={uploadingImages} />
                     </label>
                  </div>
               </div>
