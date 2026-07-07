@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, Heart, Menu, X, ChevronDown } from 'lucide-react';
+import { Search, ShoppingBag, User, Heart, Menu, X, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import api from '../api/axios';
@@ -63,6 +63,7 @@ const Navbar = () => {
     
     { name: 'Shop All', path: '/shop' },
     // { name: 'Blog', path: '/blog' },
+    { name: 'AI Finder', path: '/ai-finder', ai: true },
   ];
 
   return (
@@ -101,7 +102,11 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <div key={link.name} className="relative group py-2">
                 {link.path ? (
-                  <Link to={link.path} className="text-xs font-semibold uppercase tracking-[2px] transition-colors hover:text-gold underline-gold">
+                  <Link
+                    to={link.path}
+                    className={`text-xs font-semibold uppercase tracking-[2px] transition-colors hover:text-gold underline-gold flex items-center gap-1.5 ${link.ai ? 'text-gold' : ''}`}
+                  >
+                    {link.ai && <Sparkles size={12} />}
                     {link.name}
                   </Link>
                 ) : (
@@ -255,12 +260,13 @@ const Navbar = () => {
             </div>
             <div className="flex flex-col gap-8">
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  to={link.path || '/shop'} 
+                <Link
+                  key={link.name}
+                  to={link.path || '/shop'}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-2xl font-heading tracking-widest uppercase border-b border-gold/10 pb-4 text-ivory hover:text-gold transition-colors"
+                  className={`text-2xl font-heading tracking-widest uppercase border-b border-gold/10 pb-4 transition-colors flex items-center gap-3 ${link.ai ? 'text-gold' : 'text-ivory hover:text-gold'}`}
                 >
+                  {link.ai && <Sparkles size={20} />}
                   {link.name}
                 </Link>
               ))}

@@ -22,6 +22,7 @@ import AboutPage from './pages/AboutPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import BlogListPage from './pages/BlogListPage.jsx';
 import BlogDetailPage from './pages/BlogDetailPage.jsx';
+import AIRecommenderPage from './pages/AIRecommenderPage.jsx';
 
 // Admin Pages
 import AdminLayout from './admin/AdminLayout.jsx';
@@ -86,6 +87,7 @@ export default function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/ai-finder" element={<AIRecommenderPage />} />
                 <Route path="/blog" element={<BlogListPage />} />
                 <Route path="/blog/:slug" element={<BlogDetailPage />} />
                 <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />

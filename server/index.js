@@ -20,6 +20,7 @@ import adminRoutes from './routes/admin.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import contactRoutes from './routes/contact.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
+import aiRecommendRoutes from './routes/aiRecommend.routes.js';
 
 dotenv.config();
 
@@ -71,6 +72,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/ai-recommend', aiRecommendRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
