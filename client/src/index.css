@@ -154,14 +154,20 @@ button {
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold), var(--color-gold-dark));
+  background: linear-gradient(135deg,
+      var(--color-gold-light),
+      var(--color-gold),
+      var(--color-gold-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #1A1A1A 25%, #222222 50%, #1A1A1A 75%);
+  background: linear-gradient(90deg,
+      #1A1A1A 25%,
+      #222222 50%,
+      #1A1A1A 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
@@ -173,7 +179,8 @@ button {
   }
 
   .luxury-input:focus {
-    @apply border-gold/60 shadow-[0_0_0_3px_rgba(201, 168, 76, 0.08)];
+    @apply border-gold/60;
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.08);
   }
 }
 
@@ -230,7 +237,6 @@ button {
     padding-bottom: 3.5rem;
   }
 }
-
 
 /* ── SPACING SYSTEM ── */
 .section {
@@ -415,7 +421,8 @@ button {
   }
 
   .form-select:focus {
-    @apply border-gold/60 shadow-[0_0_0_3px_rgba(201, 168, 76, 0.08)];
+    @apply border-gold/60;
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.08);
   }
 
   .form-select option {
