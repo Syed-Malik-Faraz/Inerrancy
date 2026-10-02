@@ -79,7 +79,7 @@ const ShopPage = () => {
     setMobileFilterOpen(false);
   };
 
-  const categories = ['Men', 'Women', 'Unisex'];
+  const categories = ['Fragrance', 'Household', 'Men', 'Women', 'Unisex'];
   const fragranceFamilies = ['Sweet', 'Fresh', 'Woody', 'Spicy', 'Floral', 'Fruity', 'Citrus', 'Oriental', 'Aqua'];
   const occasions = ['Party & Evening', 'Date Night', 'Daily Wear', 'Summer Fresh', 'Winter Warmth', 'Office Wear'];
   const collections = ['Best Sellers', 'New Arrivals', 'Gift Sets', 'Luxury', 'Viral Hits'];

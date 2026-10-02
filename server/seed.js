@@ -24,7 +24,7 @@ const sampleProducts = [
     price: 4799,
     discountPrice: 3999,
     stock: 45,
-    category: 'Unisex',
+    category: 'Fragrance',
     fragranceFamily: 'Woody',
     occasion: 'Party & Evening',
     collection: 'Luxury',
@@ -293,6 +293,27 @@ const sampleProducts = [
     isFeatured: true,
     ratings: 5.0, numReviews: 12,
   },
+  {
+    name: "Imperial Gold Tissue Box",
+    brand: "Inerrancy",
+    description: "Handcrafted from brushed gold brass and velvet lining, the Imperial Gold Tissue Box brings unyielding elegance and functional perfection to your living quarters.",
+    shortDescription: "Handcrafted luxury tissue box in gold brass and velvet.",
+    images: [
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80"
+    ],
+    sizes: [
+      { label: "Standard", price: 2999, discountPrice: 2499, stock: 30 }
+    ],
+    price: 2499,
+    discountPrice: 1999,
+    stock: 30,
+    category: "Household",
+    collection: "Luxury",
+    tags: ["household", "tissue box", "luxury", "home decor"],
+    isFeatured: true,
+    ratings: 4.9,
+    numReviews: 28
+  }
 ];
 
 const sampleCoupons = [

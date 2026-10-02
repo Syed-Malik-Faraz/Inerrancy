@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, default: 0 },
   category: {
     type: String,
-    enum: ['Men', 'Women', 'Unisex'],
+    enum: ['Fragrance', 'Household', 'Sports', 'Multimedia', 'Men', 'Women', 'Unisex'],
     required: true,
   },
   fragranceFamily: {
