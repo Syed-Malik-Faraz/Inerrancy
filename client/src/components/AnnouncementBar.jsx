@@ -2,7 +2,7 @@ import React from 'react';
 
 const AnnouncementBar = () => {
   const announcements = [
-    "India's Official Destination for Middle Eastern Excellence",
+    "Inerrancy — The Discipline of Perfection",
     "Shop for ₹1999 and Receive a Fragrance, Complimentary",
     "Get 5% Cashback on Every Order — Instantly!",
   ];

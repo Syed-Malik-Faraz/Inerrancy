@@ -12,12 +12,12 @@ const ProductDetailPage = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
   const { user, updateUser } = useAuth();
-  
+
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [activeImg, setActiveImg] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [qty, setQty] = useState(1);
@@ -95,8 +95,13 @@ const ProductDetailPage = () => {
   if (loading) return <div className="page-loader"><div className="spinner" /></div>;
   if (!product) return <div className="page-loader">Product not found.</div>;
 
-  const currentPrice = selectedSize ? (selectedSize.discountPrice || selectedSize.price) : (product.discountPrice || product.price);
-  const originalPrice = selectedSize ? selectedSize.price : product.price;
+  // price = main price (always shown)
+  // discountPrice = optional offer price (shown only when set)
+  const displayPrice = selectedSize
+    ? (selectedSize.discountPrice || selectedSize.price)
+    : (product.discountPrice || product.price);
+  const basePrice = selectedSize ? selectedSize.price : product.price;
+  const hasDiscount = displayPrice < basePrice;
 
   return (
     <div className="bg-black min-h-screen pb-20">
@@ -113,14 +118,14 @@ const ProductDetailPage = () => {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-28">
-          
+
           {/* Left: Gallery */}
           <div className="flex flex-col-reverse lg:flex-row gap-6">
             {/* Thumbnails */}
             <div className="flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible no-scrollbar pb-2 lg:pb-0">
               {product.images?.map((img, i) => (
-                <button 
-                  key={i} 
+                <button
+                  key={i}
                   onClick={() => setActiveImg(i)}
                   className={`w-20 lg:w-24 aspect-square bg-black-2 border transition-all duration-300 overflow-hidden shrink-0 ${activeImg === i ? 'border-gold p-1' : 'border-gold/5 opacity-50 hover:opacity-100'}`}
                 >
@@ -128,15 +133,15 @@ const ProductDetailPage = () => {
                 </button>
               ))}
             </div>
-            
+
             {/* Main Image */}
             <div className="grow relative aspect-[3/4] bg-black-2 border border-gold/5 group overflow-hidden">
-              <img 
-                src={product.images?.[activeImg]} 
-                alt={product.name} 
+              <img
+                src={product.images?.[activeImg]}
+                alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
-              <button 
+              <button
                 onClick={handleToggleWishlist}
                 disabled={isLiking}
                 className={`absolute top-6 right-6 w-12 h-12 rounded-full backdrop-blur-md flex items-center justify-center transition-all duration-300 z-10 ${isLiked ? 'bg-luxury-red text-white' : 'bg-black/40 text-ivory hover:text-gold border border-gold/10'}`}
@@ -150,7 +155,7 @@ const ProductDetailPage = () => {
           <div className="flex flex-col">
             <span className="text-xs font-bold tracking-[4px] text-gold uppercase mb-3">{product.brand}</span>
             <h1 className="font-heading text-4xl lg:text-6xl text-ivory mb-6 leading-tight">{product.name}</h1>
-            
+
             <div className="flex items-center gap-6 mb-8 border-b border-gold/10 pb-8">
               <div className="flex items-center gap-2">
                 <div className="flex text-gold">
@@ -166,14 +171,18 @@ const ProductDetailPage = () => {
 
             <div className="mb-10">
               <div className="flex items-center gap-4 mb-2">
-                <span className="text-3xl lg:text-4xl font-bold text-gold">₹{currentPrice}</span>
-                {originalPrice > currentPrice && (
-                  <span className="text-xl text-ivory/30 line-through">₹{originalPrice}</span>
-                )}
-                {originalPrice > currentPrice && (
-                  <span className="bg-luxury-red text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider">
-                    Save {Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}%
-                  </span>
+                {hasDiscount ? (
+                  <>
+                    {/* Offer price shown when discountPrice is set */}
+                    <span className="text-3xl lg:text-4xl font-bold text-gold">₹{displayPrice}</span>
+                    {/* <span className="text-xl text-ivory/30 line-through">₹{basePrice}</span> */}
+                    <span className="bg-luxury-red text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider">
+                      {/* Save {Math.round(((basePrice - displayPrice) / basePrice) * 100)}% */}
+                    </span>
+                  </>
+                ) : (
+                  /* No discount — show main price only */
+                  <span className="text-3xl lg:text-4xl font-bold text-gold">₹{basePrice}</span>
                 )}
               </div>
               <p className="text-[10px] text-ivory/40 uppercase tracking-widest">Price inclusive of all taxes</p>
@@ -185,8 +194,8 @@ const ProductDetailPage = () => {
                 <p className="text-[10px] font-bold tracking-[3px] uppercase text-gold mb-4">Select Essence Vol.</p>
                 <div className="flex flex-wrap gap-4">
                   {product.sizes.map((s, i) => (
-                    <button 
-                      key={i} 
+                    <button
+                      key={i}
                       onClick={() => setSelectedSize(s)}
                       className={`min-w-[100px] border py-3 px-6 text-xs tracking-widest uppercase transition-all duration-300 ${selectedSize?.label === s.label ? 'border-gold bg-gold-muted text-gold' : 'border-gold/20 text-ivory/60 hover:border-gold/60'}`}
                     >
@@ -204,7 +213,7 @@ const ProductDetailPage = () => {
                 <span className="w-10 text-center text-sm font-bold text-ivory font-body">{qty}</span>
                 <button onClick={() => setQty(q => q + 1)} className="grow text-ivory/40 hover:text-gold transition-colors"><Plus size={16} className="mx-auto" /></button>
               </div>
-              <button 
+              <button
                 onClick={handleAddToCart}
                 className="btn btn-primary h-14 grow text-xs font-bold tracking-[3px]"
               >
@@ -254,7 +263,7 @@ const ProductDetailPage = () => {
         <section className="mb-28">
           <div className="flex border-b border-gold/10 mb-12 overflow-x-auto no-scrollbar">
             {['description', 'notes', 'specifications', 'reviews'].map((tab) => (
-              <button 
+              <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`pb-4 px-8 text-xs font-bold tracking-[3px] uppercase whitespace-nowrap transition-all duration-300 relative ${activeTab === tab ? 'text-gold' : 'text-ivory/40 hover:text-ivory'}`}
@@ -320,22 +329,22 @@ const ProductDetailPage = () => {
 
             {activeTab === 'reviews' && (
               <div className="max-w-4xl">
-                 <div className="flex items-center justify-between mb-12">
-                    <h3 className="font-heading text-3xl text-ivory tracking-wide">Client Testimonials</h3>
-                    <button 
-                      onClick={() => {
-                        if (!user) {
-                          toast.error('Access Restricted. Please log in to leave your feedback.');
-                          return;
-                        }
-                        setReviewModalOpen(true);
-                      }}
-                      className="btn btn-outline btn-sm font-bold tracking-[2px] hover:border-gold hover:text-gold transition-colors"
-                    >
-                      Write Review
-                    </button>
-                 </div>
-                
+                <div className="flex items-center justify-between mb-12">
+                  <h3 className="font-heading text-3xl text-ivory tracking-wide">Client Testimonials</h3>
+                  <button
+                    onClick={() => {
+                      if (!user) {
+                        toast.error('Access Restricted. Please log in to leave your feedback.');
+                        return;
+                      }
+                      setReviewModalOpen(true);
+                    }}
+                    className="btn btn-outline btn-sm font-bold tracking-[2px] hover:border-gold hover:text-gold transition-colors"
+                  >
+                    Write Review
+                  </button>
+                </div>
+
                 {reviews.length === 0 ? (
                   <div className="py-20 text-center border border-dashed border-gold/10 rounded-lg">
                     <p className="text-ivory/40 text-sm italic">Be the first to share your olfactory experience with this masterpiece.</p>
@@ -349,17 +358,17 @@ const ProductDetailPage = () => {
                         </div>
                         <div>
                           <div className="flex items-center gap-4 mb-2">
-                             <span className="text-gold font-bold text-xs uppercase tracking-widest">{rev.user?.name}</span>
-                             <div className="flex text-gold text-[10px]">
-                                {[...Array(5)].map((_, j) => <Star key={j} size={10} fill={j < rev.rating ? 'currentColor' : 'transparent'} />)}
-                             </div>
-                             <span className="text-[10px] text-ivory/30 uppercase">{new Date(rev.createdAt).toLocaleDateString()}</span>
+                            <span className="text-gold font-bold text-xs uppercase tracking-widest">{rev.user?.name}</span>
+                            <div className="flex text-gold text-[10px]">
+                              {[...Array(5)].map((_, j) => <Star key={j} size={10} fill={j < rev.rating ? 'currentColor' : 'transparent'} />)}
+                            </div>
+                            <span className="text-[10px] text-ivory/30 uppercase">{new Date(rev.createdAt).toLocaleDateString()}</span>
                           </div>
                           <h5 className="text-ivory font-bold text-sm mb-3 tracking-wide">{rev.title}</h5>
                           <p className="text-ivory/60 text-sm leading-relaxed mb-4">{rev.comment}</p>
                           {rev.images?.length > 0 && (
                             <div className="flex gap-2">
-                               {rev.images.map((img, idx) => <img key={idx} src={img} className="w-20 aspect-square object-cover border border-gold/10" />)}
+                              {rev.images.map((img, idx) => <img key={idx} src={img} className="w-20 aspect-square object-cover border border-gold/10" />)}
                             </div>
                           )}
                         </div>
@@ -377,8 +386,8 @@ const ProductDetailPage = () => {
           <section className="section-sm">
             <div className="flex justify-between items-end mb-16">
               <div>
-                 <span className="section-label">Aromatic Kinship</span>
-                 <h2 className="section-title">You May Also Envy</h2>
+                <span className="section-label">Aromatic Kinship</span>
+                <h2 className="section-title">You May Also Envy</h2>
               </div>
               <Link to="/shop" className="text-xs font-bold tracking-[3px] text-gold uppercase hover:underline">Explore All</Link>
             </div>
@@ -394,7 +403,7 @@ const ProductDetailPage = () => {
       {reviewModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
           <div className="bg-neutral-900 border border-gold/20 p-8 md:p-10 rounded-lg max-w-lg w-full relative animate-fade-in shadow-2xl">
-            <button 
+            <button
               onClick={() => setReviewModalOpen(false)}
               className="absolute top-6 right-6 text-ivory/50 hover:text-gold text-lg transition-colors font-sans"
             >
@@ -402,7 +411,7 @@ const ProductDetailPage = () => {
             </button>
             <h3 className="font-heading text-2xl text-gold mb-2 uppercase tracking-widest">Share Your Olfactory Journey</h3>
             <p className="text-ivory/40 text-[10px] uppercase tracking-[2px] mb-8">Your feedback helps sustain the circle of excellence</p>
-            
+
             <form onSubmit={handleReviewSubmit} className="space-y-6">
               <div className="form-group">
                 <label className="form-label font-bold tracking-[2px] text-xs text-gold uppercase mb-3 block">Your Rating</label>
@@ -416,19 +425,19 @@ const ProductDetailPage = () => {
                       onMouseLeave={() => setHoverRating(0)}
                       className="transition-transform duration-200 hover:scale-125 focus:outline-none"
                     >
-                      <Star 
-                        size={28} 
-                        fill={(hoverRating || newReview.rating) >= star ? 'currentColor' : 'transparent'} 
+                      <Star
+                        size={28}
+                        fill={(hoverRating || newReview.rating) >= star ? 'currentColor' : 'transparent'}
                         className={(hoverRating || newReview.rating) >= star ? 'text-gold' : 'text-charcoal'}
                       />
                     </button>
                   ))}
                 </div>
               </div>
-              
+
               <div className="form-group">
                 <label className="form-label font-bold tracking-[2px] text-xs text-gold uppercase mb-2 block">Review Title</label>
-                <input 
+                <input
                   type="text"
                   required
                   value={newReview.title}
@@ -440,7 +449,7 @@ const ProductDetailPage = () => {
 
               <div className="form-group">
                 <label className="form-label font-bold tracking-[2px] text-xs text-gold uppercase mb-2 block">Detailed Testimonial</label>
-                <textarea 
+                <textarea
                   required
                   rows="4"
                   value={newReview.comment}

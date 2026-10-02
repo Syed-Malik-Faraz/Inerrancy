@@ -50,7 +50,7 @@ const LoginPage = () => {
           <h2 className="font-heading text-3xl lg:text-4xl text-ivory mb-6 tracking-widest italic opacity-0 animate-fade-in translate-up">
             "Enter the world of olfactory excellence. Your curated collection awaits."
           </h2>
-          <p className="text-gold/60 text-[10px] uppercase tracking-[4px] font-bold">The Official Destination for Arabian Luxury</p>
+          <p className="text-gold/60 text-[10px] uppercase tracking-[4px] font-bold">The Discipline of Perfection</p>
         </div>
         <div className="absolute bottom-10 left-10 flex gap-10 opacity-30">
            <div className="flex items-center gap-3 text-[10px] text-ivory tracking-[4px] uppercase font-bold"><ShieldCheck size={16} /> Secure Portal</div>

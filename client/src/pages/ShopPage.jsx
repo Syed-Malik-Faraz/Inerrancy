@@ -151,8 +151,8 @@ const ShopPage = () => {
         </div>
       </div>
 
-      <div className="container pb-20">
-        <div className="flex gap-12">
+      <div className="container pb-24">
+        <div className="flex gap-14">
           
           {/* Sidebar Filters (Desktop) */}
           <aside className="hidden lg:block w-64 shrink-0">
@@ -175,7 +175,7 @@ const ShopPage = () => {
           {/* Product Grid */}
           <main className="grow">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-14 gap-x-10">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="flex flex-col gap-4">
                     <div className="aspect-[3/4] skeleton" />
@@ -195,7 +195,7 @@ const ShopPage = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-14 gap-x-10">
                   {products.map(product => (
                     <ProductCard key={product._id} product={product} />
                   ))}

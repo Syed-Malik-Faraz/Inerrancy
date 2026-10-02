@@ -116,7 +116,7 @@ const RegisterPage = () => {
 
           <div className="space-y-8 max-w-sm mx-auto">
             {[
-              { title: 'Exclusive Curation', desc: 'Access India\'s largest portfolio of authentic Arabian masterpieces.' },
+              { title: 'Exclusive Curation', desc: 'Access India\'s largest portfolio of authentic luxury masterpieces.' },
               { title: 'Priority Dispatch', desc: 'Members receive insured, priority curating for every selection.' },
               { title: 'Inerrancy Circle', desc: 'Secure first access to limited drops and exclusive olfactory events.' }
             ].map((item, i) => (
@@ -134,7 +134,7 @@ const RegisterPage = () => {
         </div>
 
         <div className="absolute bottom-10 inset-x-0 text-center opacity-20">
-          <p className="text-[9px] tracking-[6px] text-ivory uppercase font-bold">The House of Middle Eastern Excellence</p>
+          <p className="text-[9px] tracking-[6px] text-ivory uppercase font-bold">The Discipline of Perfection</p>
         </div>
       </div>
 

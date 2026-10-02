@@ -10,8 +10,8 @@ import 'swiper/css/effect-fade';
 const slides = [
   {
     image: '/Arabian-perfume-home.jpg',
-    subtitle: 'THE ART OF ARABIAN PERFUMERY',
-    title: 'Middle Eastern Excellence',
+    subtitle: 'THE DISCIPLINE OF PERFECTION',
+    title: 'The Inerrancy Standard',
     desc: 'Discover original factory-sealed masterpieces from the most prestigious houses of Dubai.',
     cta: 'EXPLORE COLLECTION',
     link: '/shop?category=Men',
@@ -24,14 +24,14 @@ const slides = [
     cta: 'SHOP THE DROP',
     link: '/shop?fragranceFamily=Woody',
   },
-  {
-    image: '/Gift-set-home.jpg',
-    subtitle: 'GIFTING PERFECTION',
-    title: 'Ethereal Gift Sets',
-    desc: 'Celebrate your loved ones with curated olfactory journeys. Elegance in every bottle.',
-    cta: 'VIEW ALL SETS',
-    link: '/shop?collection=Gift Sets',
-  },
+  // {
+  //   image: '/Gift-set-home.jpg',
+  //   subtitle: 'GIFTING PERFECTION',
+  //   title: 'Ethereal Gift Sets',
+  //   desc: 'Celebrate your loved ones with curated olfactory journeys. Elegance in every bottle.',
+  //   cta: 'VIEW ALL SETS',
+  //   link: '/shop?collection=Gift Sets',
+  // },
 ];
 
 const HeroCarousel = () => {
@@ -54,7 +54,7 @@ const HeroCarousel = () => {
         {slides.map((slide, index) => (
           <SwiperSlide key={index} className="relative h-full w-full overflow-hidden bg-black">
             {/* Image Layer */}
-            <div 
+            <div
               className="absolute inset-0 z-0 brightness-75 transition-transform duration-[4000ms] group-[.swiper-slide-active]:scale-110"
               data-swiper-parallax="20%"
             >
@@ -65,24 +65,24 @@ const HeroCarousel = () => {
             {/* Content Layer */}
             <div className="container relative h-full flex items-center z-20">
               <div className="max-w-2xl">
-                <p 
+                <p
                   className="section-label text-gold drop-shadow-lg mb-6 leading-none"
                   data-swiper-parallax="-300"
                 >{slide.subtitle}</p>
-                <h2 
+                <h2
                   className="font-heading text-5xl lg:text-8xl text-ivory mb-8 leading-[1.1]"
                   data-swiper-parallax="-500"
                 >{slide.title}</h2>
-                <div 
+                <div
                   className="h-1 w-24 bg-gold mb-10 transition-all duration-1000 origin-left"
                   data-swiper-parallax="-400"
                 />
-                <p 
+                <p
                   className="text-ivory/80 text-lg lg:text-xl max-w-lg mb-12 font-light leading-relaxed font-body"
                   data-swiper-parallax="-600"
                 >{slide.desc}</p>
-                <Link 
-                  to={slide.link} 
+                <Link
+                  to={slide.link}
                   className="btn btn-primary btn-lg inline-flex items-center gap-3 transition-all duration-500 hover:gap-6"
                   data-swiper-parallax="-700"
                 >

@@ -73,7 +73,7 @@ const OrderConfirmationPage = () => {
             {/* Left Col: Details */}
             <div>
               <div className="mb-12">
-                <h3 className="text-xs font-bold text- gold uppercase tracking-[4px] mb-6 flex items-center gap-3">
+                <h3 className="text-xs font-bold text-gold uppercase tracking-[4px] mb-6 flex items-center gap-3">
                   <Truck size={16} /> Destination Portfolio
                 </h3>
                 <div className="space-y-4 p-6 bg-black border border-gold/5 rounded-xl">
@@ -117,6 +117,7 @@ const OrderConfirmationPage = () => {
                     <span>Curating Fee</span>
                     <span>{order.shippingPrice === 0 ? 'Complimentary' : `₹${order.shippingPrice}`}</span>
                  </div>
+                 {/* Discount row: only shown when a coupon/discount was applied to the order */}
                  {order.discountPrice > 0 && (
                    <div className="flex justify-between items-center text-xs tracking-widest uppercase text-luxury-green font-bold">
                     <span>- Discount Applied</span>

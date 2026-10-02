@@ -23,6 +23,7 @@ import ContactPage from './pages/ContactPage.jsx';
 import BlogListPage from './pages/BlogListPage.jsx';
 import BlogDetailPage from './pages/BlogDetailPage.jsx';
 import AIRecommenderPage from './pages/AIRecommenderPage.jsx';
+import { SportsCategoryPage, MultimediaCategoryPage } from './pages/UpcomingCategoryPage.jsx';
 
 // Admin Pages
 import AdminLayout from './admin/AdminLayout.jsx';
@@ -83,6 +84,8 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/shop" element={<ShopPage />} />
+                <Route path="/category/sports" element={<SportsCategoryPage />} />
+                <Route path="/category/multimedia" element={<MultimediaCategoryPage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/about" element={<AboutPage />} />

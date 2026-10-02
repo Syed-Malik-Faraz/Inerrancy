@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { FaInstagram, FaFacebookF, FaTwitter } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -33,7 +33,7 @@ const Footer = () => {
     <footer className="bg-black-2 border-t border-gold/10 pt-24 pb-12">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
-          
+
           {/* Brand Info */}
           <div className="flex flex-col gap-8">
             <Link to="/" className="flex flex-col group">
@@ -43,17 +43,17 @@ const Footer = () => {
                 className="h-[44px] md:h-16 w-auto mb-2 object-contain group-hover:opacity-90 transition-opacity"
               />
               <span className="font-heading text-4xl tracking-[6px] text-gold group-hover:text-gold-light transition-colors">
-                INERRANCY - 
+                INERRANCY -
               </span>
               <span className="text-[10px] tracking-[4px] text-gold/40 uppercase font-body mt-2">
-                Fragrance Excellence
+                The Discipline of Perfection
               </span>
             </Link>
             <p className="text-ivory/50 text-sm leading-loose max-w-sm italic font-heading">
-              "Witness the majestic journey through the ancient oud trails of the Middle East. Authenticity in every seal."
+              "Where every bottle is a testament to the discipline of perfection — crafted for those who demand nothing less."
             </p>
             <div className="flex gap-5">
-              {[FaInstagram, FaFacebookF, FaTwitter].map((Icon, i) => (
+              {[FaInstagram, FaFacebook, FaTwitter].map((Icon, i) => (
                 <a key={i} href="#" className="w-12 h-12 rounded-full border border-gold/10 flex items-center justify-center text-ivory/40 hover:text-gold hover:border-gold transition-all duration-500">
                   <Icon size={18} />
                 </a>
@@ -64,7 +64,7 @@ const Footer = () => {
           {/* Links Sections */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <h4 className="font-heading text-2xl text-gold mb-12 tracking-wide font-medium">{section.title}</h4>
+              <h4 className="font-heading text-2xl text-gold mb-6 tracking-wide font-medium">{section.title}</h4>
               <ul className="flex flex-col gap-5">
                 {section.links.map((link) => (
                   <li key={link.label}>
@@ -79,9 +79,9 @@ const Footer = () => {
 
           {/* Get in Touch */}
           <div>
-            <h4 className="font-heading text-2xl text-gold mb-12 tracking-wide font-medium">Get in Touch</h4>
+            <h4 className="font-heading text-2xl text-gold mb-6 tracking-wide font-medium">Get in Touch</h4>
             <ul className="flex flex-col gap-6">
-              
+
               {/* <li className="flex items-start gap-4 text-ivory/50">
                 <MapPin size={18} className="text-gold mt-1 shrink-0" />
                 <span className="text-sm leading-relaxed">DLF Cyber City, Tower 10,<br />Gurgaon, HR 122002</span>
@@ -93,8 +93,21 @@ const Footer = () => {
 
               <li className="flex items-center gap-4 text-ivory/50">
                 <Mail size={18} className="text-gold shrink-0" />
-                <span className="text-sm tracking-wider">inerrancyprivatelimited@gmail.com</span>
+                <span className="text-sm tracking-wider"><a href="mailto:[care@inerrancy.in]">care@inerrancy.in</a></span>
               </li>
+              <li className="flex items-center gap-4 text-ivory/50">
+                <FaInstagram size={18} className="text-gold shrink-0" />
+                <span className="text-sm tracking-wider"><a href="https://www.instagram.com/inerrancy_private_limited?stkn=czJjajNxMnMwc21k">@inerrancy_private_limited</a></span>
+              </li>
+              <li className="flex items-center gap-4 text-ivory/50">
+                <FaFacebook size={18} className="text-gold shrink-0" />
+                <span className="text-sm tracking-wider"><a href="https://www.facebook.com/share/18KmzqLzs3/">Inerrancy Reliability</a></span>
+              </li>
+              <li className="flex items-center gap-4 text-ivory/50">
+                <FaTwitter size={18} className="text-gold shrink-0" />
+                <span className="text-sm tracking-wider"><a href="https://x.com/Inerrancypvt">@inerrancy_com</a></span>
+              </li>
+
             </ul>
           </div>
 

@@ -271,6 +271,7 @@ function FilterTag({ label }) {
 }
 
 function AIProductCard({ rec, rank, addToCart }) {
+  // Discount badge: only shown when a discountPrice is set
   const discountPct = rec.discountPrice
     ? Math.round(((rec.price - rec.discountPrice) / rec.price) * 100)
     : 0;
@@ -303,7 +304,7 @@ function AIProductCard({ rec, rank, addToCart }) {
           </span>
         </div>
 
-        {/* Discount badge */}
+        {/* -% OFF badge: only shows when discountPrice is set */}
         {discountPct > 0 && (
           <div className="absolute bottom-3 left-3 bg-luxury-red text-white text-[9px] font-bold px-2 py-1 tracking-wider uppercase">
             -{discountPct}% OFF
@@ -345,10 +346,12 @@ function AIProductCard({ rec, rank, addToCart }) {
         <div className="flex items-baseline gap-2">
           {rec.discountPrice ? (
             <>
+              {/* Offer price shown when discountPrice is set */}
               <span className="text-gold font-bold text-lg">₹{rec.discountPrice}</span>
               <span className="text-ivory/25 text-xs line-through">₹{rec.price}</span>
             </>
           ) : (
+            /* No discount — show main price only */
             <span className="text-ivory font-bold">₹{rec.price}</span>
           )}
         </div>

@@ -74,7 +74,7 @@ const WishlistPage = () => {
              <Link to="/shop" className="btn btn-primary px-12 uppercase tracking-[4px]">DISCOVER ESSENCES</Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-8">
             {wishlist.map((product) => (
               <div key={product._id} className="group relative animate-fade-up">
                  {/* Similar to ProductCard but with a remove button overlay */}
@@ -107,7 +107,7 @@ const WishlistPage = () => {
                           {[...Array(5)].map((_, i) => <Star key={i} size={10} fill={i < Math.floor(product.ratings) ? 'currentColor' : 'transparent'} className={i >= Math.floor(product.ratings) ? 'text-charcoal' : ''} />)}
                        </div>
                     </div>
-                    <p className="text-gold font-bold text-sm">₹{product.discountPrice || product.price}</p>
+                    {product.discountPrice ? (<><span className="text-gold font-bold text-sm">₹{product.discountPrice}</span><span className="text-ivory/40 text-xs line-through ml-1">₹{product.price}</span></>) : (<p className="text-gold font-bold text-sm">₹{product.price}</p>)}
                  </div>
               </div>
             ))}
@@ -120,3 +120,5 @@ const WishlistPage = () => {
 };
 
 export default WishlistPage;
+
+
