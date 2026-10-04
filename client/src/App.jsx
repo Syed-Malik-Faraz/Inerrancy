@@ -24,6 +24,7 @@ import BlogListPage from './pages/BlogListPage.jsx';
 import BlogDetailPage from './pages/BlogDetailPage.jsx';
 import AIRecommenderPage from './pages/AIRecommenderPage.jsx';
 import { SportsCategoryPage, MultimediaCategoryPage } from './pages/UpcomingCategoryPage.jsx';
+// import ShippingPolicy from './pages/ShippingPolicy.jsx';
 
 // Admin Pages
 import AdminLayout from './admin/AdminLayout.jsx';
@@ -89,6 +90,7 @@ export default function App() {
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                {/* <Route path="/ShippingPolicy" element={<ShippingPolicy />} /> */}
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/ai-finder" element={<AIRecommenderPage />} />
                 <Route path="/blog" element={<BlogListPage />} />

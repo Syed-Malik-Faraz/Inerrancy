@@ -10,6 +10,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [navBrands, setNavBrands] = useState(['Ahmed Al Maghribi', 'Afnan', 'Rasasi', 'Swiss Essences', 'Khadlaj']);
   const { user, isAdmin, logout } = useAuth();
   const { cartCount, setCartOpen } = useCart();
   const navigate = useNavigate();
@@ -21,6 +22,21 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const refreshBrands = () => {
+    api.get('/products/brands').then(res => {
+      if (res.data.brands?.length) setNavBrands(res.data.brands);
+    }).catch(() => { });
+  };
+
+  useEffect(() => {
+    refreshBrands();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    window.addEventListener('brands-updated', refreshBrands);
+    return () => window.removeEventListener('brands-updated', refreshBrands);
+  }, []);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -30,43 +46,13 @@ const Navbar = () => {
     }
   };
 
-  const navCategories = [
-    {
-      name: 'Household',
-      desc: 'Tissue box & Home luxury',
-      path: '/shop?category=Household',
-      badge: 'Available',
-      badgeColor: 'text-luxury-green border-luxury-green/30 bg-luxury-green/10'
-    },
-    {
-      name: 'Fragrance',
-      desc: 'Luxury perfumes & oils',
-      path: '/shop?category=Fragrance',
-      badge: 'Available',
-      badgeColor: 'text-luxury-green border-luxury-green/30 bg-luxury-green/10'
-    },
-    {
-      name: 'Sports',
-      desc: 'Rare sports memorabilia',
-      path: '/category/sports',
-      badge: 'Launching Soon',
-      badgeColor: 'text-gold border-gold/30 bg-gold/10'
-    },
-    {
-      name: 'Multimedia',
-      desc: 'Design print, digital media & Chatbot tech',
-      path: '/category/multimedia',
-      badge: 'Launching Soon',
-      badgeColor: 'text-gold border-gold/30 bg-gold/10'
-    },
-  ];
-
   const navLinks = [
     { name: 'Home', path: '/' },
     {
       name: 'Categories',
-      dropdown: navCategories
+      dropdown: navBrands
     },
+
     {
       name: 'Find Products',
       dropdown: [
@@ -74,26 +60,29 @@ const Navbar = () => {
         { label: 'By Occasion', paramKey: 'occasion', items: ['Party & Evening', 'Date Night', 'Daily Wear', 'Office Wear'] },
       ]
     },
+
     { name: 'Shop All', path: '/shop' },
+    // { name: 'Blog', path: '/blog' },
     { name: 'AI Finder', path: '/ai-finder', ai: true },
   ];
 
   return (
     <>
+
       {/* Top Announcement Bar */}
       <div className="fixed top-0 w-full h-8 lg:h-10 bg-black-2 border-b border-gold/10 z-[60] flex items-center justify-center overflow-hidden">
-        <div className="flex items-center gap-12 animate-marquee whitespace-nowrap">
-          {[...Array(6)].map((_, i) => (
-            <span key={i} className="text-[9px] lg:text-[10px] tracking-[4px] text-gold font-bold uppercase">
-              🏺 Complimentary Shipping on Luxury Orders Over ₹999 — Experience Inerrancy
-            </span>
-          ))}
-        </div>
+        {/* <div className="flex items-center gap-12 animate-marquee whitespace-nowrap"> */}
+        {/* {[...Array(6)].map((_, i) => ( */}
+        {/* <span key={i} className="text-[9px] lg:text-[10px] tracking-[4px] text-gold font-bold uppercase"> */}
+        {/* 🏺 Complimentary Shipping on Luxury Orders Over ₹999 — Experience Inerrancy */}
+        {/* </span> */}
+        {/* ))} */}
+        {/* </div> */}
       </div>
 
       <nav className={`fixed top-8 lg:top-10 w-full z-50 transition-all duration-500 ${isScrolled ? 'glass h-[72px] shadow-2xl border-b border-gold/10' : 'bg-transparent h-[90px]'}`}>
         <div className="container h-full flex items-center justify-between">
-          
+
           {/* Left: Mobile Menu Toggle */}
           <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden text-ivory hover:text-gold transition-colors">
             <Menu size={24} />
@@ -126,32 +115,18 @@ const Navbar = () => {
                     {link.name} <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
                   </button>
                 )}
-                
+
                 {/* Dropdown / Mega Menu */}
                 {link.dropdown && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                    <div className="bg-black-2 border border-gold/20 p-5 min-w-[280px] shadow-2xl rounded-sm">
-                      <div className="grid grid-cols-1 gap-3">
-                        {link.name === 'Categories' ? (
-                          link.dropdown.map((cat, idx) => (
-                            <Link
-                              key={idx}
-                              to={cat.path}
-                              className="p-3 border border-gold/5 rounded hover:border-gold/30 hover:bg-gold/5 transition-all group/cat block"
-                            >
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-bold uppercase tracking-wider text-ivory group-hover/cat:text-gold transition-colors">
-                                  {cat.name}
-                                </span>
-                                <span className={`text-[8px] font-bold tracking-widest uppercase px-2 py-0.5 border rounded-full ${cat.badgeColor}`}>
-                                  {cat.badge}
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-ivory/50 font-light">{cat.desc}</p>
+                    <div className="bg-black-2 border border-gold/20 p-6 min-w-[200px] shadow-2xl rounded-sm">
+                      <div className="grid grid-cols-1 gap-4">
+                        {link.dropdown.map((item, idx) => (
+                          typeof item === 'string' ? (
+                            <Link key={idx} to={`/shop?brand=${item}`} className="text-[11px] uppercase tracking-wider text-ivory/70 hover:text-gold transition-colors block">
+                              {item}
                             </Link>
-                          ))
-                        ) : (
-                          link.dropdown.map((item, idx) => (
+                          ) : (
                             <div key={idx} className="mb-2">
                               <span className="text-[10px] text-gold font-bold block mb-2 uppercase tracking-[2px] border-b border-gold/10 pb-1">{item.label}</span>
                               <div className="grid grid-cols-1 gap-2">
@@ -162,8 +137,8 @@ const Navbar = () => {
                                 ))}
                               </div>
                             </div>
-                          ))
-                        )}
+                          )
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -187,9 +162,9 @@ const Navbar = () => {
             >
               <Search size={20} />
             </button>
-            
+
             <div className="relative group">
-              <button 
+              <button
                 className="text-ivory hover:text-gold transition-colors flex items-center gap-2 py-2"
                 onClick={() => !user && navigate('/login')}
               >
@@ -236,7 +211,7 @@ const Navbar = () => {
               )}
             </Link>
 
-            <button 
+            <button
               onClick={() => setCartOpen(true)}
               className="text-ivory hover:text-gold transition-colors relative"
             >
@@ -263,7 +238,7 @@ const Navbar = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search fragrances, categories..."
+                placeholder="Search fragrances, brands..."
                 className="flex-1 bg-transparent text-ivory text-sm outline-none placeholder-ivory/30 tracking-wider py-1"
               />
               <button
@@ -278,50 +253,30 @@ const Navbar = () => {
         )}
 
         {/* Mobile Drawer */}
-        <div className={`fixed inset-0 bg-black/95 z-[100] transition-transform duration-500 lg:hidden ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} backdrop-blur-xl overflow-y-auto`}>
+        <div className={`fixed inset-0 bg-black/95 z-[100] transition-transform duration-500 lg:hidden ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} backdrop-blur-xl`}>
           <div className="p-8 flex flex-col h-full">
-            <div className="flex justify-between items-center mb-10">
+            <div className="flex justify-between items-center mb-16">
               <span className="font-heading text-2xl tracking-[4px] text-gold">INERRANCY</span>
               <button onClick={() => setMobileMenuOpen(false)} className="text-ivory hover:text-gold transition-colors"><X size={32} /></button>
             </div>
-            
-            <div className="flex flex-col gap-6">
-              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-xl font-heading tracking-widest uppercase text-ivory hover:text-gold">Home</Link>
-              
-              {/* Mobile Categories Accordion */}
-              <div className="border-y border-gold/10 py-4">
-                <span className="text-xs font-bold text-gold uppercase tracking-[3px] block mb-4">Inerrancy Categories</span>
-                <div className="grid grid-cols-1 gap-3">
-                  {navCategories.map((cat, idx) => (
-                    <Link
-                      key={idx}
-                      to={cat.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-3 bg-black-2 border border-gold/10 rounded"
-                    >
-                      <div>
-                        <p className="text-sm font-bold text-ivory uppercase tracking-wider">{cat.name}</p>
-                        <p className="text-[10px] text-ivory/50">{cat.desc}</p>
-                      </div>
-                      <span className={`text-[8px] font-bold tracking-widest uppercase px-2 py-0.5 border rounded-full ${cat.badgeColor}`}>
-                        {cat.badge}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="text-xl font-heading tracking-widest uppercase text-ivory hover:text-gold">Shop All</Link>
-              <Link to="/ai-finder" onClick={() => setMobileMenuOpen(false)} className="text-xl font-heading tracking-widest uppercase text-gold flex items-center gap-2">
-                <Sparkles size={18} /> AI Finder
-              </Link>
+            <div className="flex flex-col gap-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path || '/shop'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`text-2xl font-heading tracking-widest uppercase border-b border-gold/10 pb-4 transition-colors flex items-center gap-3 ${link.ai ? 'text-gold' : 'text-ivory hover:text-gold'}`}
+                >
+                  {link.ai && <Sparkles size={20} />}
+                  {link.name}
+                </Link>
+              ))}
               {isAdmin && (
-                <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-xl font-heading tracking-widest uppercase text-gold">
+                <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-heading tracking-widest uppercase text-gold">
                   Admin Panel
                 </Link>
               )}
             </div>
-
             <div className="mt-auto pb-10 border-t border-gold/10 pt-10">
               {user ? (
                 <>
@@ -336,7 +291,7 @@ const Navbar = () => {
               ) : (
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary w-full py-4 text-[10px] font-bold tracking-[3px] uppercase mb-8">Sign In</Link>
               )}
-              <p className="text-[10px] text-ivory/20 uppercase tracking-[4px] font-bold mb-4">The Discipline of Perfection</p>
+              <p className="text-[10px] text-ivory/20 uppercase tracking-[4px] font-bold mb-4">The House of Luxury</p>
               <div className="w-12 h-0.5 bg-gold/20" />
             </div>
           </div>

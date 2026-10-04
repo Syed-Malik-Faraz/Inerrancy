@@ -21,7 +21,7 @@ const AboutPage = () => {
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32">
                <div className="relative group overflow-hidden rounded-2xl border border-gold/10 aspect-[4/5]">
                   <img
-                     src="/Inerrancy-logo.jpeg"
+                     src="/Star-img-2.jpeg"
                      className="w-full h-full object-cover  transition-transform duration-[5000ms] group-hover:scale-110 group-hover:grayscale-0"
                   />
                   <div className="absolute inset-0 bg-gold/5 blur-3xl -z-10 group-hover:bg-gold/10 transition-all duration-500" />
@@ -29,13 +29,46 @@ const AboutPage = () => {
 
                <div className="space-y-12 animate-fade-in translate-up">
                   <div>
-                     <h2 className="font-heading text-4xl text-ivory mb-6 tracking-wide">The House of Inerrancy</h2>
+                     <h2 className="font-heading text-4xl text-ivory mb-6 tracking-wide"> Inerrancy</h2>
                      <p className="text-ivory/60 leading-loose text-lg font-light italic mb-8">
-                        "In an era of dilutions and imitations, we stand as the definitive bastion of the factory-sealed original."
+                        The Discipline of Perfection.
                      </p>
                      <div className="space-y-6 text-ivory/40 leading-loose uppercase tracking-[2px] text-xs">
-                        <p>Inerrancy is India's premier destination for original, factory-sealed luxury fragrances from prestigious international houses, including Lattafa, Ahmed Al Maghribi, Afnan, Rasasi, and Swiss Essences.</p>
-                        <p>Our journey began with a realization: that the fragrance market in India was saturated with unverified 'testers' and decants. We committed ourselves to an entirely different path — one of absolute integrity.</p>
+                        <p>
+                           There are fragrances that adorn the skin.
+
+                           And then there are fragrances that become a signature.
+
+                           Inerrancy is conceived from an uncompromising pursuit of olfactory precision—where every material has a purpose, every accord has a place, and every detail exists in exact proportion.
+
+                           Nothing is added for spectacle.
+                           Nothing is removed for simplicity.
+                           Nothing is left to chance.
+
+                           Its character is defined not by excess, but by discernment: rare ingredients, considered contrasts, immaculate balance, and a composition whose elegance reveals itself gradually, intimately, and with unmistakable presence.
+
+                           Inerrancy is luxury distilled to its most sophisticated form—quiet, exacting, and deeply individual.
+
+                           It does not seek to follow fragrance tradition, nor to imitate what has already been created.
+
+                           It seeks something more difficult:
+
+                           to create a signature with no unnecessary gesture.
+
+                           A scent that does not announce itself.
+
+                           A scent that is remembered.
+
+                           A scent composed with the conviction that perfection is not abundance—
+
+                           it is precision.
+
+                           INERRANCY
+
+                           Nothing accidental. Nothing excessive. Nothing less than exact.
+
+                        </p>
+
                      </div>
                   </div>
 

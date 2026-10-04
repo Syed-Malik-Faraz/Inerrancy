@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, X } from 'lucide-react';
 import { FaInstagram, FaFacebook, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
@@ -104,7 +104,7 @@ const Footer = () => {
                 <span className="text-sm tracking-wider"><a href="https://www.facebook.com/share/18KmzqLzs3/">Inerrancy Reliability</a></span>
               </li>
               <li className="flex items-center gap-4 text-ivory/50">
-                <FaTwitter size={18} className="text-gold shrink-0" />
+                <X size={18} className="text-gold shrink-0" />
                 <span className="text-sm tracking-wider"><a href="https://x.com/Inerrancypvt">@inerrancy_com</a></span>
               </li>
 
@@ -135,11 +135,11 @@ const Footer = () => {
         <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2">
             <p className="text-[9px] tracking-[5px] text-ivory/20 uppercase text-center md:text-left font-bold">
-              © {currentYear} INERRANCY — THE HOUSE OF AUTHENTIC LUXURY PERFUMES
+              © {currentYear} INERRANCY — The Discipline of Perfection.
             </p>
-            <p className="text-[8px] tracking-[3px] text-ivory/10 uppercase text-center md:text-left">
+            {/* <p className="text-[8px] tracking-[3px] text-ivory/10 uppercase text-center md:text-left">
               India's Premier Destination for Fragrances
-            </p>
+            </p> */}
           </div>
           <div className="flex gap-10">
             {['Privacy Policy', 'Terms of Service', 'Cookie Vault'].map((txt) => (

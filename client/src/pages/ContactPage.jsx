@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, ShieldCheck, Clock } from 'lucide-react';
-import { FaInstagram, FaFacebookF, FaTwitter } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
 
@@ -46,7 +46,7 @@ const ContactPage = () => {
                {/* Left: Contact Info */}
                <div className="space-y-16 animate-fade-in translate-up">
                   <div className="space-y-10">
-                     <div className="flex gap-8 group">
+                     {/* <div className="flex gap-8 group">
                         <div className="w-16 h-16 rounded-2xl bg-black-2 border border-gold/10 flex items-center justify-center text-gold transition-all group-hover:bg-gold group-hover:text-black shrink-0">
                            <MapPin size={28} />
                         </div>
@@ -57,7 +57,7 @@ const ContactPage = () => {
                               Gurgaon, Haryana 122002, India
                            </p>
                         </div>
-                     </div>
+                     </div> */}
 
                      <div className="flex gap-8 group">
                         <div className="w-16 h-16 rounded-2xl bg-black-2 border border-gold/10 flex items-center justify-center text-gold transition-all group-hover:bg-gold group-hover:text-black shrink-0">
@@ -66,7 +66,7 @@ const ContactPage = () => {
                         <div>
                            <h4 className="text-xs font-bold text-ivory uppercase tracking-[3px] mb-3">Direct Dispatch</h4>
                            <p className="text-ivory/40 text-[11px] uppercase tracking-[2px] leading-relaxed scale-95 origin-left mb-2">
-                              Primary Support: support@inerrancy.in
+                              Primary Support: care@inerrancy.com
                            </p>
                            {/* <p className="text-ivory/40 text-[11px] uppercase tracking-[2px] leading-relaxed scale-95 origin-left">
                           Business Enquiries: care@inerrancy.in
@@ -95,7 +95,7 @@ const ContactPage = () => {
                      <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-2xl rounded-full" />
                      <h4 className="text-xs font-bold text-ivory uppercase tracking-[3px] mb-6">Social Portfolios</h4>
                      <div className="flex gap-6">
-                        {[FaInstagram, FaFacebookF, FaTwitter].map((Icon, i) => (
+                        {[FaInstagram, FaFacebook,].map((Icon, i) => (
                            <a key={i} href="#" className="w-12 h-12 rounded-full border border-gold/10 flex items-center justify-center text-ivory/40 hover:text-gold hover:border-gold transition-all duration-300">
                               <Icon size={20} />
                            </a>

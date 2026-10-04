@@ -7,22 +7,33 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
+
+
+// INERRANCY
+// The Discipline of Perfection.
+// Luxury distilled to its most sophisticated form and deeply individual.
+
+// INERRANCY
+// Elegance revealed with Perfection.
+// Nothing accidental. Nothing excessive. Nothing less than exact.
+
+
 const slides = [
   {
-    image: '/Arabian-perfume-home.jpg',
-    subtitle: 'THE DISCIPLINE OF PERFECTION',
-    title: 'The Inerrancy Standard',
-    desc: 'Discover original factory-sealed masterpieces from the most prestigious houses of Dubai.',
+    image: '/Star-img-1.jpeg',
+    subtitle: 'INERRANCY',
+    title: 'The Discipline of Perfection.',
+    desc: ' Luxury distilled to its most sophisticated form and deeply individual.',
     cta: 'EXPLORE COLLECTION',
-    link: '/shop?category=Men',
+    link: '/shop?category=Women',
   },
   {
-    image: '/Oud-perfume-home.jpg',
-    subtitle: 'NIGHTTIME SEDUCTION',
-    title: 'The Oud Collection',
-    desc: 'Deep, mysterious, and profoundly luxurious. Experience the primitive power of pure oud.',
+    image: '/Star-img-2.jpeg',
+    subtitle: 'INERRANCY',
+    title: ' Elegance revealed with Perfection.',
+    desc: ' Nothing accidental. Nothing excessive. Nothing less than exact.',
     cta: 'SHOP THE DROP',
-    link: '/shop?fragranceFamily=Woody',
+    link: '/shop?category=Men',
   },
   // {
   //   image: '/Gift-set-home.jpg',

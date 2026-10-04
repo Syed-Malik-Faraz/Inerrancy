@@ -238,7 +238,7 @@ const ProductDetailPage = () => {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-ivory uppercase tracking-widest mb-1">Priority Luxury Delivery</h4>
-                  <p className="text-[10px] text-ivory/40 leading-relaxed">Complimentary Express shipping on all orders over ₹999.</p>
+                  {/* <p className="text-[10px] text-ivory/40 leading-relaxed">Complimentary Express shipping on all orders over ₹999.</p> */}
                 </div>
               </div>
             </div>
