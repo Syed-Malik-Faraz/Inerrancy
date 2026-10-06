@@ -24,7 +24,12 @@ import BlogListPage from './pages/BlogListPage.jsx';
 import BlogDetailPage from './pages/BlogDetailPage.jsx';
 import AIRecommenderPage from './pages/AIRecommenderPage.jsx';
 import { SportsCategoryPage, MultimediaCategoryPage } from './pages/UpcomingCategoryPage.jsx';
-// import ShippingPolicy from './pages/ShippingPolicy.jsx';
+import ShippingPolicyPage from './pages/ShippingPolicyPage.jsx';
+import TermsPage from './pages/TermsPage.jsx';
+import CookiePolicyPage from './pages/CookiePolicyPage.jsx';
+import ReturnPolicyPage from './pages/ReturnPolicyPage.jsx';
+import FAQPage from './pages/FAQPage.jsx';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage.jsx';
 
 // Admin Pages
 import AdminLayout from './admin/AdminLayout.jsx';
@@ -90,7 +95,12 @@ export default function App() {
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/about" element={<AboutPage />} />
-                {/* <Route path="/ShippingPolicy" element={<ShippingPolicy />} /> */}
+                <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+                <Route path="/returns" element={<ReturnPolicyPage />} />
+                <Route path="/faq" element={<FAQPage />} />
+                <Route path="/privacy" element={<PrivacyPolicyPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/ai-finder" element={<AIRecommenderPage />} />
                 <Route path="/blog" element={<BlogListPage />} />

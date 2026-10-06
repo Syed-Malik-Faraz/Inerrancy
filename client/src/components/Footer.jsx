@@ -21,7 +21,7 @@ const Footer = () => {
       title: 'Customer Care',
       links: [
         { label: 'Contact Us', path: '/contact' },
-        { label: 'Shipping Policy', path: '/shipping' },
+        { label: 'Shipping Policy', path: '/shipping-policy' },
         { label: 'Return Policy', path: '/returns' },
         { label: 'FAQ', path: '/faq' },
         { label: 'Track Order', path: '/orders' },
@@ -53,7 +53,7 @@ const Footer = () => {
               "Where every bottle is a testament to the discipline of perfection — crafted for those who demand nothing less."
             </p>
             <div className="flex gap-5">
-              {[FaInstagram, FaFacebook, FaTwitter].map((Icon, i) => (
+              {[FaInstagram, FaFacebook, X].map((Icon, i) => (
                 <a key={i} href="#" className="w-12 h-12 rounded-full border border-gold/10 flex items-center justify-center text-ivory/40 hover:text-gold hover:border-gold transition-all duration-500">
                   <Icon size={18} />
                 </a>
@@ -142,11 +142,9 @@ const Footer = () => {
             </p> */}
           </div>
           <div className="flex gap-10">
-            {['Privacy Policy', 'Terms of Service', 'Cookie Vault'].map((txt) => (
-              <a key={txt} href="#" className="text-[10px] tracking-[3px] text-ivory/20 uppercase hover:text-gold transition-colors font-bold">
-                {txt}
-              </a>
-            ))}
+            <Link to="/privacy" className="text-[10px] tracking-[3px] text-ivory/20 uppercase hover:text-gold transition-colors font-bold">Privacy Policy</Link>
+            <Link to="/terms" className="text-[10px] tracking-[3px] text-ivory/20 uppercase hover:text-gold transition-colors font-bold">Terms of Service</Link>
+            <Link to="/cookie-policy" className="text-[10px] tracking-[3px] text-ivory/20 uppercase hover:text-gold transition-colors font-bold">Cookie Policy</Link>
           </div>
         </div>
       </div>
