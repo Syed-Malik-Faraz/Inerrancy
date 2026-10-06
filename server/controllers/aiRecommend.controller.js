@@ -722,4 +722,3 @@ export const getAIRecommendations = async (req, res) => {
     });
   }
 };
-````
