@@ -3,14 +3,19 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, ShoppingBag, User, Heart, Menu, X, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import api from '../api/axios';
+
+const categories = [
+  { label: 'Fragrance',    path: '/shop?category=Fragrance',    soon: false },
+  { label: 'Household',   path: '/shop?category=Household',    soon: false },
+  { label: 'Sports',      path: '/category/sports',            soon: true  },
+  { label: 'Digital Media', path: '/category/multimedia',      soon: true  },
+];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [navBrands, setNavBrands] = useState(['Ahmed Al Maghribi', 'Afnan', 'Rasasi', 'Swiss Essences', 'Khadlaj']);
   const { user, isAdmin, logout } = useAuth();
   const { cartCount, setCartOpen } = useCart();
   const navigate = useNavigate();
@@ -22,20 +27,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const refreshBrands = () => {
-    api.get('/products/brands').then(res => {
-      if (res.data.brands?.length) setNavBrands(res.data.brands);
-    }).catch(() => { });
-  };
 
-  useEffect(() => {
-    refreshBrands();
-  }, [location.pathname]);
-
-  useEffect(() => {
-    window.addEventListener('brands-updated', refreshBrands);
-    return () => window.removeEventListener('brands-updated', refreshBrands);
-  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -50,7 +42,7 @@ const Navbar = () => {
     { name: 'Home', path: '/' },
     {
       name: 'Categories',
-      dropdown: navBrands
+      dropdown: categories
     },
 
     {
@@ -119,14 +111,25 @@ const Navbar = () => {
                 {/* Dropdown / Mega Menu */}
                 {link.dropdown && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                    <div className="bg-black-2 border border-gold/20 p-6 min-w-[200px] shadow-2xl rounded-sm">
-                      <div className="grid grid-cols-1 gap-4">
+                    <div className="bg-black-2 border border-gold/20 p-6 min-w-[220px] shadow-2xl rounded-sm">
+                      <div className="grid grid-cols-1 gap-1">
                         {link.dropdown.map((item, idx) => (
-                          typeof item === 'string' ? (
-                            <Link key={idx} to={`/shop?brand=${item}`} className="text-[11px] uppercase tracking-wider text-ivory/70 hover:text-gold transition-colors block">
-                              {item}
+                          /* ── Category items (have .path) ── */
+                          item.path !== undefined ? (
+                            <Link
+                              key={idx}
+                              to={item.path}
+                              className="flex items-center justify-between gap-4 px-2 py-2.5 text-[11px] uppercase tracking-wider text-ivory/70 hover:text-gold transition-colors group/item rounded"
+                            >
+                              <span>{item.label}</span>
+                              {item.soon && (
+                                <span className="text-[8px] font-bold tracking-[2px] text-gold/70 border border-gold/25 px-1.5 py-0.5 rounded-full leading-none shrink-0">
+                                  SOON
+                                </span>
+                              )}
                             </Link>
                           ) : (
+                            /* ── Grouped filter items (have .label + .items) ── */
                             <div key={idx} className="mb-2">
                               <span className="text-[10px] text-gold font-bold block mb-2 uppercase tracking-[2px] border-b border-gold/10 pb-1">{item.label}</span>
                               <div className="grid grid-cols-1 gap-2">
