@@ -36,9 +36,9 @@ const ContactPage = () => {
                <span className="section-label">COMMUNICATION</span>
                <h1 className="font-heading text-5xl lg:text-7xl text-ivory mb-6 tracking-wide">Connect With the Curators</h1>
                <div className="gold-divider mx-auto" />
-               <p className="text-ivory/60 text-lg lg:text-xl font-light max-w-2xl mx-auto italic leading-relaxed font-heading">
+               {/* <p className="text-ivory/60 text-lg lg:text-xl font-light max-w-2xl mx-auto italic leading-relaxed font-heading">
                   "Our client specialists are available to guide your olfactory discovery."
-               </p>
+               </p> */}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
