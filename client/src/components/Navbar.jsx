@@ -87,7 +87,7 @@ const Navbar = () => {
 
     if (brand === 'Digital Media') return '/category/multimedia';
 
-    if (brand === 'Consultancy') return '/';
+    if (brand === 'Consultancy') return '/category/consultancy';
 
     return `/shop?brand=${encodeURIComponent(brand)}`;
   };
@@ -133,8 +133,8 @@ const Navbar = () => {
 
       <nav
         className={`fixed top-8 lg:top-10 w-full z-50 transition-all duration-500 ${isScrolled
-            ? 'glass h-[72px] shadow-2xl border-b border-gold/10'
-            : 'bg-transparent h-[90px]'
+          ? 'glass h-[72px] shadow-2xl border-b border-gold/10'
+          : 'bg-transparent h-[90px]'
           }`}
       >
         <div className="container h-full flex items-center justify-between">

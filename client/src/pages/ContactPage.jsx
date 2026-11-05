@@ -66,7 +66,9 @@ const ContactPage = () => {
                         <div>
                            <h4 className="text-xs font-bold text-ivory uppercase tracking-[3px] mb-3">Direct Dispatch</h4>
                            <p className="text-ivory/40 text-[11px] uppercase tracking-[2px] leading-relaxed scale-95 origin-left mb-2">
-                              Primary Support: care@inerrancy.com
+                              Primary Support: <a href="mailto:care@inerrancy.in" className="text-gold" style={{ color: "#D4AF37" }}>
+                                 care@inerrancy.in
+                              </a>
                            </p>
                            {/* <p className="text-ivory/40 text-[11px] uppercase tracking-[2px] leading-relaxed scale-95 origin-left">
                           Business Enquiries: care@inerrancy.in
@@ -93,13 +95,21 @@ const ContactPage = () => {
                   {/* Socials */}
                   <div className="p-10 bg-black-2 border-l-2 border-gold rounded-r-2xl relative overflow-hidden">
                      <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-2xl rounded-full" />
-                     <h4 className="text-xs font-bold text-ivory uppercase tracking-[3px] mb-6">Social Portfolios</h4>
+                     <h4 className="text-s font-bold text-ivory uppercase tracking-[3px] mb-6">Social Portfolios</h4>
                      <div className="flex gap-6">
-                        {[FaInstagram, FaFacebook,].map((Icon, i) => (
-                           <a key={i} href="#" className="w-12 h-12 rounded-full border border-gold/10 flex items-center justify-center text-ivory/40 hover:text-gold hover:border-gold transition-all duration-300">
-                              <Icon size={20} />
-                           </a>
-                        ))}
+                        <li className="flex items-center gap-4 text-ivory/50">
+                           <Mail size={18} className="text-gold shrink-0" />
+                           <span className="text-sm tracking-wider"><a href="mailto:[care@inerrancy.in]">care@inerrancy.in</a></span>
+                        </li>
+                        <li className="flex items-center gap-4 text-ivory/50">
+                           <FaInstagram size={18} className="text-gold shrink-0" />
+                           <span className="text-sm tracking-wider"><a href="https://www.instagram.com/inerrancy_private_limited?stkn=czJjajNxMnMwc21k">@inerrancy_private_limited</a></span>
+                        </li>
+                        <li className="flex items-center gap-4 text-ivory/50">
+                           <FaFacebook size={18} className="text-gold shrink-0" />
+                           <span className="text-sm tracking-wider"><a href="https://www.facebook.com/share/18KmzqLzs3/">Inerrancy Reliability</a></span>
+                        </li>
+
                      </div>
                   </div>
 

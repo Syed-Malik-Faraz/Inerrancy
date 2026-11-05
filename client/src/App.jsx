@@ -23,7 +23,7 @@ import ContactPage from './pages/ContactPage.jsx';
 import BlogListPage from './pages/BlogListPage.jsx';
 import BlogDetailPage from './pages/BlogDetailPage.jsx';
 import AIRecommenderPage from './pages/AIRecommenderPage.jsx';
-import { SportsCategoryPage, MultimediaCategoryPage } from './pages/UpcomingCategoryPage.jsx';
+import { SportsCategoryPage, MultimediaCategoryPage, ConsultancyCategoryPage } from './pages/UpcomingCategoryPage.jsx';
 import ShippingPolicyPage from './pages/ShippingPolicyPage.jsx';
 import TermsPage from './pages/TermsPage.jsx';
 import CookiePolicyPage from './pages/CookiePolicyPage.jsx';
@@ -92,6 +92,7 @@ export default function App() {
                 <Route path="/shop" element={<ShopPage />} />
                 <Route path="/category/sports" element={<SportsCategoryPage />} />
                 <Route path="/category/multimedia" element={<MultimediaCategoryPage />} />
+                <Route path="/category/consultancy" element={<ConsultancyCategoryPage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/about" element={<AboutPage />} />

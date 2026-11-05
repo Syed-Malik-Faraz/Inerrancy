@@ -261,7 +261,7 @@ const ProductDetailPage = () => {
             </div>
 
             {/* Social Share */}
-            <div className="flex items-center gap-4 pt-4">
+            {/* <div className="flex items-center gap-4 pt-4">
               <span className="text-[10px] text-ivory/30 uppercase tracking-[2px]">Share Scent:</span>
               <div className="flex gap-4">
                 {[FaInstagram, FaFacebookF, FaTwitter].map((Icon, i) => (
@@ -271,7 +271,7 @@ const ProductDetailPage = () => {
                 ))}
                 <button className="text-ivory/40 hover:text-gold transition-colors"><Share2 size={16} /></button>
               </div>
-            </div>
+            </div> */}
 
           </div>
         </div>
@@ -279,7 +279,7 @@ const ProductDetailPage = () => {
         {/* Detailed Tabs */}
 
         <section className="mb-24 md:mb-28">
-          <div className="flex border-b border-gold/10 mb-8 md:mb-10 overflow-x-auto no-scrollbar">
+          {/* <div className="flex border-b border-gold/10 mb-8 md:mb-10 overflow-x-auto no-scrollbar">
             {['description', 'notes', 'specifications', 'reviews'].map((tab) => (
               <button
                 key={tab}
@@ -290,7 +290,27 @@ const ProductDetailPage = () => {
                 {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gold animate-fade-in" />}
               </button>
             ))}
+          </div> */}
+
+
+          <div className="flex items-center border-b border-gold/10 mb-10 md:mb-14 overflow-x-auto no-scrollbar">
+            {['description', 'notes', 'specifications', 'reviews'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`min-w-[130px] md:min-w-[170px] px-6 md:px-10 py-5 text-center text-[11px] md:text-xs font-bold tracking-[2px] md:tracking-[3px] uppercase whitespace-nowrap transition-all duration-300 relative shrink-0 ${activeTab === tab
+                  ? 'text-gold'
+                  : 'text-ivory/40 hover:text-ivory'
+                  }`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gold animate-fade-in" />
+                )}
+              </button>
+            ))}
           </div>
+
 
           <div className="animate-fade-in py-3 md:py-4">
             {activeTab === 'description' && (
