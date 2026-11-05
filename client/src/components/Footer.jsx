@@ -43,7 +43,7 @@ const Footer = () => {
                 className="h-[44px] md:h-16 w-auto mb-2 object-contain group-hover:opacity-90 transition-opacity"
               />
               <span className="font-heading text-4xl tracking-[6px] text-gold group-hover:text-gold-light transition-colors">
-                INERRANCY -
+                INERRANCY
               </span>
               <span className="text-[10px] tracking-[4px] text-gold/40 uppercase font-body mt-2">
                 The Discipline of Perfection
@@ -52,13 +52,13 @@ const Footer = () => {
             <p className="text-ivory/50 text-sm leading-loose max-w-sm italic font-heading">
               "Where every bottle is a testament to the discipline of perfection — crafted for those who demand nothing less."
             </p>
-            <div className="flex gap-5">
+            {/* <div className="flex gap-5">
               {[FaInstagram, FaFacebook, X].map((Icon, i) => (
                 <a key={i} href="#" className="w-12 h-12 rounded-full border border-gold/10 flex items-center justify-center text-ivory/40 hover:text-gold hover:border-gold transition-all duration-500">
                   <Icon size={18} />
                 </a>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Links Sections */}
@@ -135,7 +135,7 @@ const Footer = () => {
         <div className="mt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2">
             <p className="text-[9px] tracking-[5px] text-ivory/20 uppercase text-center md:text-left font-bold">
-              © {currentYear} INERRANCY — The Discipline of Perfection.
+              © {currentYear} INERRANCY  The Discipline of Perfection.
             </p>
             {/* <p className="text-[8px] tracking-[3px] text-ivory/10 uppercase text-center md:text-left">
               India's Premier Destination for Fragrances

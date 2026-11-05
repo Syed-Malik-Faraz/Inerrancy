@@ -154,7 +154,7 @@ const ProductDetailPage = () => {
           {/* Right: Info */}
           <div className="flex flex-col">
             <span className="text-xs font-bold tracking-[4px] text-gold uppercase mb-3">{product.brand}</span>
-            <h1 className="font-heading text-4xl lg:text-6xl text-ivory mb-6 leading-tight">{product.name}</h1>
+            <h1 className="font-heading text-6xl lg:text-6xl text-ivory mb-6 leading-tight">{product.name}</h1>
 
             <div className="flex items-center gap-6 mb-8 border-b border-gold/10 pb-8">
               <div className="flex items-center gap-2">
@@ -208,11 +208,27 @@ const ProductDetailPage = () => {
 
             {/* Qty & Add to Cart */}
             <div className="flex flex-col sm:flex-row gap-4 mb-10 pb-10 border-b border-gold/10">
-              <div className="flex items-center border border-gold/20 h-14 w-full sm:w-32 bg-black-2">
-                <button onClick={() => setQty(q => Math.max(1, q - 1))} className="grow text-ivory/40 hover:text-gold transition-colors"><Minus size={16} className="mx-auto" /></button>
-                <span className="w-10 text-center text-sm font-bold text-ivory font-body">{qty}</span>
-                <button onClick={() => setQty(q => q + 1)} className="grow text-ivory/40 hover:text-gold transition-colors"><Plus size={16} className="mx-auto" /></button>
+
+              <div className="grid grid-cols-[1fr_40px_1fr] items-center border border-gold/20 h-14 w-full sm:w-32 bg-black-2">
+                <button
+                  onClick={() => setQty(q => Math.max(1, q - 1))}
+                  className="flex items-center justify-center h-full text-ivory/40 hover:text-gold transition-colors"
+                >
+                  <Minus size={16} />
+                </button>
+
+                <span className="text-center text-sm font-bold text-ivory font-body">
+                  {qty}
+                </span>
+
+                <button
+                  onClick={() => setQty(q => q + 1)}
+                  className="flex items-center justify-center h-full text-ivory/40 hover:text-gold transition-colors"
+                >
+                  <Plus size={16} />
+                </button>
               </div>
+
               <button
                 onClick={handleAddToCart}
                 className="btn btn-primary h-14 grow text-xs font-bold tracking-[3px]"
@@ -220,6 +236,7 @@ const ProductDetailPage = () => {
                 ADD TO SELECTION
               </button>
             </div>
+
 
             {/* USP List */}
             <div className="flex flex-col gap-6 mb-10">
@@ -260,13 +277,14 @@ const ProductDetailPage = () => {
         </div>
 
         {/* Detailed Tabs */}
-        <section className="mb-28">
-          <div className="flex border-b border-gold/10 mb-12 overflow-x-auto no-scrollbar">
+
+        <section className="mb-24 md:mb-28">
+          <div className="flex border-b border-gold/10 mb-8 md:mb-10 overflow-x-auto no-scrollbar">
             {['description', 'notes', 'specifications', 'reviews'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-4 px-8 text-xs font-bold tracking-[3px] uppercase whitespace-nowrap transition-all duration-300 relative ${activeTab === tab ? 'text-gold' : 'text-ivory/40 hover:text-ivory'}`}
+                className={`pb-4 px-5 md:px-8 text-xs font-bold tracking-[3px] uppercase whitespace-nowrap transition-all duration-300 relative ${activeTab === tab ? 'text-gold' : 'text-ivory/40 hover:text-ivory'}`}
               >
                 {tab}
                 {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gold animate-fade-in" />}
@@ -274,37 +292,36 @@ const ProductDetailPage = () => {
             ))}
           </div>
 
-          <div className="animate-fade-in py-4">
+          <div className="animate-fade-in py-3 md:py-4">
             {activeTab === 'description' && (
               <div className="max-w-4xl">
-                <h3 className="font-heading text-3xl text-ivory mb-6 tracking-wide">The Olfactory Narrative</h3>
-                <p className="text-ivory/60 leading-loose text-lg font-light mb-8 italic">"{product.shortDescription}"</p>
-                <div className="text-ivory/60 leading-loose space-y-6" dangerouslySetInnerHTML={{ __html: product.description }} />
+                <p className="text-ivory/60 leading-loose text-base md:text-lg font-light mb-6 md:mb-8 italic">"{product.shortDescription}"</p>
+                <div className="text-ivory/60 leading-loose space-y-5 md:space-y-6" dangerouslySetInnerHTML={{ __html: product.description }} />
               </div>
             )}
 
             {activeTab === 'notes' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 max-w-5xl">
                 {product.notes?.top?.length > 0 && (
-                  <div className="p-8 bg-black-2 border border-gold/5 rounded-lg flex flex-col items-center text-center group hover:border-gold transition-colors">
-                    <span className="text-[10px] font-bold text-gold uppercase tracking-[4px] mb-6">Top Notes</span>
-                    <div className="flex flex-col gap-4">
+                  <div className="p-6 md:p-8 bg-black-2 border border-gold/5 rounded-lg flex flex-col items-center text-center group hover:border-gold transition-colors">
+                    <span className="text-[10px] font-bold text-gold uppercase tracking-[4px] mb-5 md:mb-6">Top Notes</span>
+                    <div className="flex flex-col gap-3 md:gap-4">
                       {product.notes.top.map((n, i) => <span key={i} className="text-lg text-ivory/80 font-heading tracking-widest">{n}</span>)}
                     </div>
                   </div>
                 )}
                 {product.notes?.middle?.length > 0 && (
-                  <div className="p-8 bg-black-2 border border-gold/5 rounded-lg flex flex-col items-center text-center group hover:border-gold transition-colors scale-105 border-gold/20">
-                    <span className="text-[10px] font-bold text-gold uppercase tracking-[4px] mb-6">Heart Notes</span>
-                    <div className="flex flex-col gap-4">
+                  <div className="p-6 md:p-8 bg-black-2 border border-gold/5 rounded-lg flex flex-col items-center text-center group hover:border-gold transition-colors md:scale-105 border-gold/20">
+                    <span className="text-[10px] font-bold text-gold uppercase tracking-[4px] mb-5 md:mb-6">Heart Notes</span>
+                    <div className="flex flex-col gap-3 md:gap-4">
                       {product.notes.middle.map((n, i) => <span key={i} className="text-xl text-ivory font-heading tracking-widest">{n}</span>)}
                     </div>
                   </div>
                 )}
                 {product.notes?.base?.length > 0 && (
-                  <div className="p-8 bg-black-2 border border-gold/5 rounded-lg flex flex-col items-center text-center group hover:border-gold transition-colors">
-                    <span className="text-[10px] font-bold text-gold uppercase tracking-[4px] mb-6">Base Notes</span>
-                    <div className="flex flex-col gap-4">
+                  <div className="p-6 md:p-8 bg-black-2 border border-gold/5 rounded-lg flex flex-col items-center text-center group hover:border-gold transition-colors">
+                    <span className="text-[10px] font-bold text-gold uppercase tracking-[4px] mb-5 md:mb-6">Base Notes</span>
+                    <div className="flex flex-col gap-3 md:gap-4">
                       {product.notes.base.map((n, i) => <span key={i} className="text-lg text-ivory/80 font-heading tracking-widest">{n}</span>)}
                     </div>
                   </div>
@@ -314,7 +331,7 @@ const ProductDetailPage = () => {
 
             {activeTab === 'specifications' && (
               <div className="max-w-xl">
-                <div className="grid grid-cols-2 gap-y-4 border border-gold/10 p-8 rounded-lg">
+                <div className="grid grid-cols-2 gap-x-5 gap-y-5 md:gap-y-6 border border-gold/10 p-6 md:p-8 rounded-lg">
                   <span className="text-ivory/40 text-xs uppercase tracking-widest">Brand</span>
                   <span className="text-gold font-bold uppercase tracking-wider">{product.brand}</span>
                   <span className="text-ivory/40 text-xs uppercase tracking-widest">Fragrance Family</span>
@@ -329,8 +346,8 @@ const ProductDetailPage = () => {
 
             {activeTab === 'reviews' && (
               <div className="max-w-4xl">
-                <div className="flex items-center justify-between mb-12">
-                  <h3 className="font-heading text-3xl text-ivory tracking-wide">Client Testimonials</h3>
+                <div className="flex items-center justify-between gap-4 mb-8 md:mb-10">
+                  <h3 className="font-heading text-2xl md:text-3xl text-ivory tracking-wide">Client Testimonials</h3>
                   <button
                     onClick={() => {
                       if (!user) {
@@ -339,25 +356,25 @@ const ProductDetailPage = () => {
                       }
                       setReviewModalOpen(true);
                     }}
-                    className="btn btn-outline btn-sm font-bold tracking-[2px] hover:border-gold hover:text-gold transition-colors"
+                    className="btn btn-outline btn-sm font-bold tracking-[2px] hover:border-gold hover:text-gold transition-colors shrink-0"
                   >
                     Write Review
                   </button>
                 </div>
 
                 {reviews.length === 0 ? (
-                  <div className="py-20 text-center border border-dashed border-gold/10 rounded-lg">
-                    <p className="text-ivory/40 text-sm italic">Be the first to share your olfactory experience with this masterpiece.</p>
+                  <div className="py-16 md:py-20 text-center border border-dashed border-gold/10 rounded-lg">
+                    {/* <p className="text-ivory/40 text-sm italic">Be the first to share your olfactory experience with this masterpiece.</p> */}
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-10">
+                  <div className="flex flex-col gap-8 md:gap-10">
                     {reviews.map((rev, i) => (
-                      <div key={i} className="flex gap-6 border-b border-gold/5 pb-10 last:border-0 translate-up">
-                        <div className="w-14 h-14 rounded-full bg-black-3 border border-gold/20 flex items-center justify-center text-gold font-heading text-2xl overflow-hidden shrink-0">
+                      <div key={i} className="flex gap-4 md:gap-6 border-b border-gold/5 pb-8 md:pb-10 last:border-0 translate-up">
+                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-black-3 border border-gold/20 flex items-center justify-center text-gold font-heading text-2xl overflow-hidden shrink-0">
                           {rev.user?.avatar ? <img src={rev.user.avatar} className="w-full h-full object-cover" /> : rev.user?.name?.[0]}
                         </div>
-                        <div>
-                          <div className="flex items-center gap-4 mb-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3">
                             <span className="text-gold font-bold text-xs uppercase tracking-widest">{rev.user?.name}</span>
                             <div className="flex text-gold text-[10px]">
                               {[...Array(5)].map((_, j) => <Star key={j} size={10} fill={j < rev.rating ? 'currentColor' : 'transparent'} />)}
@@ -380,6 +397,7 @@ const ProductDetailPage = () => {
             )}
           </div>
         </section>
+
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (

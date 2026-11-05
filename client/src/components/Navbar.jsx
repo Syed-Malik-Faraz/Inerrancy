@@ -1,36 +1,79 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, Heart, Menu, X, ChevronDown, Sparkles } from 'lucide-react';
+import {
+  Search,
+  ShoppingBag,
+  User,
+  Heart,
+  Menu,
+  X,
+  ChevronDown,
+  Sparkles
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-
-const categories = [
-  { label: 'Fragrance',    path: '/shop?category=Fragrance',    soon: false },
-  { label: 'Household',   path: '/shop?category=Household',    soon: false },
-  { label: 'Sports',      path: '/category/sports',            soon: true  },
-  { label: 'Digital Media', path: '/category/multimedia',      soon: true  },
-];
+import api from '../api/axios';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [navBrands, setNavBrands] = useState([
+    'Fragrance',
+    'Household',
+    'Sports',
+    'Digital Media',
+    'Consultancy'
+  ]);
+
   const { user, isAdmin, logout } = useAuth();
   const { cartCount, setCartOpen } = useCart();
+
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
+
     window.addEventListener('scroll', handleScroll);
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const refreshBrands = () => {
+    api.get('/products/brands')
+      .then(res => {
+        if (res.data.brands?.length) {
+          setNavBrands([
+            ...new Set([
+              ...res.data.brands,
+              'Sports',
+              'Digital Media',
+              'Consultancy'
+            ])
+          ]);
+        }
+      })
+      .catch(() => { });
+  };
 
+  useEffect(() => {
+    refreshBrands();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    window.addEventListener('brands-updated', refreshBrands);
+
+    return () => window.removeEventListener('brands-updated', refreshBrands);
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
+
     if (searchQuery.trim()) {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchOpen(false);
@@ -38,29 +81,45 @@ const Navbar = () => {
     }
   };
 
+  // Special category routes
+  const getCategoryPath = (brand) => {
+    if (brand === 'Sports') return '/category/sports';
+
+    if (brand === 'Digital Media') return '/category/multimedia';
+
+    if (brand === 'Consultancy') return '/';
+
+    return `/shop?brand=${encodeURIComponent(brand)}`;
+  };
+
   const navLinks = [
     { name: 'Home', path: '/' },
     {
       name: 'Categories',
-      dropdown: categories
+      dropdown: navBrands
     },
-
     {
       name: 'Find Products',
       dropdown: [
-        { label: 'By Fragrance', paramKey: 'fragranceFamily', items: ['Sweet', 'Fresh', 'Woody', 'Spicy', 'Floral', 'Aqua'] },
-        { label: 'By Occasion', paramKey: 'occasion', items: ['Party & Evening', 'Date Night', 'Daily Wear', 'Office Wear'] },
+        {
+          label: 'By Fragrance',
+          paramKey: 'fragranceFamily',
+          items: ['Sweet', 'Fresh', 'Woody', 'Spicy', 'Floral', 'Aqua']
+        },
+        {
+          label: 'By Occasion',
+          paramKey: 'occasion',
+          items: ['Party & Evening', 'Date Night', 'Daily Wear', 'Office Wear']
+        }
       ]
     },
-
     { name: 'Shop All', path: '/shop' },
     // { name: 'Blog', path: '/blog' },
-    { name: 'AI Finder', path: '/ai-finder', ai: true },
+    { name: 'AI Finder', path: '/ai-finder', ai: true }
   ];
 
   return (
     <>
-
       {/* Top Announcement Bar */}
       <div className="fixed top-0 w-full h-8 lg:h-10 bg-black-2 border-b border-gold/10 z-[60] flex items-center justify-center overflow-hidden">
         {/* <div className="flex items-center gap-12 animate-marquee whitespace-nowrap"> */}
@@ -72,11 +131,19 @@ const Navbar = () => {
         {/* </div> */}
       </div>
 
-      <nav className={`fixed top-8 lg:top-10 w-full z-50 transition-all duration-500 ${isScrolled ? 'glass h-[72px] shadow-2xl border-b border-gold/10' : 'bg-transparent h-[90px]'}`}>
+      <nav
+        className={`fixed top-8 lg:top-10 w-full z-50 transition-all duration-500 ${isScrolled
+            ? 'glass h-[72px] shadow-2xl border-b border-gold/10'
+            : 'bg-transparent h-[90px]'
+          }`}
+      >
         <div className="container h-full flex items-center justify-between">
 
           {/* Left: Mobile Menu Toggle */}
-          <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden text-ivory hover:text-gold transition-colors">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="lg:hidden text-ivory hover:text-gold transition-colors"
+          >
             <Menu size={24} />
           </button>
 
@@ -94,47 +161,60 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-10">
             {navLinks.map((link) => (
               <div key={link.name} className="relative group py-2">
+
                 {link.path ? (
                   <Link
                     to={link.path}
-                    className={`text-xs font-semibold uppercase tracking-[2px] transition-colors hover:text-gold underline-gold flex items-center gap-1.5 ${link.ai ? 'text-gold' : ''}`}
+                    className={`text-xs font-semibold uppercase tracking-[2px] transition-colors hover:text-gold underline-gold flex items-center gap-1.5 ${link.ai ? 'text-gold' : ''
+                      }`}
                   >
                     {link.ai && <Sparkles size={12} />}
                     {link.name}
                   </Link>
                 ) : (
                   <button className="text-xs font-semibold uppercase tracking-[2px] flex items-center gap-1 transition-colors hover:text-gold">
-                    {link.name} <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
+                    {link.name}
+                    <ChevronDown
+                      size={14}
+                      className="group-hover:rotate-180 transition-transform"
+                    />
                   </button>
                 )}
 
                 {/* Dropdown / Mega Menu */}
                 {link.dropdown && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                    <div className="bg-black-2 border border-gold/20 p-6 min-w-[220px] shadow-2xl rounded-sm">
-                      <div className="grid grid-cols-1 gap-1">
+                    <div className="bg-black-2 border border-gold/20 p-6 min-w-[200px] shadow-2xl rounded-sm">
+                      <div className="grid grid-cols-1 gap-4">
+
                         {link.dropdown.map((item, idx) => (
-                          /* ── Category items (have .path) ── */
-                          item.path !== undefined ? (
+                          typeof item === 'string' ? (
                             <Link
                               key={idx}
-                              to={item.path}
-                              className="flex items-center justify-between gap-4 px-2 py-2.5 text-[11px] uppercase tracking-wider text-ivory/70 hover:text-gold transition-colors group/item rounded"
+                              to={getCategoryPath(item)}
+                              className="flex items-center justify-between gap-4 text-[11px] uppercase tracking-wider text-ivory/70 hover:text-gold transition-colors"
                             >
-                              <span>{item.label}</span>
-                              {item.soon && (
-                                <span className="text-[8px] font-bold tracking-[2px] text-gold/70 border border-gold/25 px-1.5 py-0.5 rounded-full leading-none shrink-0">
-                                  SOON
+                              <span>{item}</span>
+
+                              {(item === 'Sports' || item === 'Digital Media') && (
+                                <span className="text-[8px] text-gold border border-gold/30 px-2 py-1 whitespace-nowrap">
+                                  Coming Soon
                                 </span>
                               )}
                             </Link>
                           ) : (
-                            /* ── Grouped filter items (have .label + .items) ── */
                             <div key={idx} className="mb-2">
-                              <span className="text-[10px] text-gold font-bold block mb-2 uppercase tracking-[2px] border-b border-gold/10 pb-1">{item.label}</span>
+                              <span className="text-[10px] text-gold font-bold block mb-2 uppercase tracking-[2px] border-b border-gold/10 pb-1">
+                                {item.label}
+                              </span>
+
                               <div className="grid grid-cols-1 gap-2">
                                 {item.items.map((sub, sIdx) => (
-                                  <Link key={sIdx} to={`/shop?${item.paramKey}=${encodeURIComponent(sub)}`} className="text-[11px] text-ivory/60 hover:text-gold transition-colors block">
+                                  <Link
+                                    key={sIdx}
+                                    to={`/shop?${item.paramKey}=${encodeURIComponent(sub)}`}
+                                    className="text-[11px] text-ivory/60 hover:text-gold transition-colors block"
+                                  >
                                     {sub}
                                   </Link>
                                 ))}
@@ -142,6 +222,7 @@ const Navbar = () => {
                             </div>
                           )
                         ))}
+
                       </div>
                     </div>
                   </div>
@@ -151,7 +232,10 @@ const Navbar = () => {
 
             {/* Admin Toggle (Desktop) */}
             {isAdmin && (
-              <Link to="/admin" className="text-[10px] font-bold uppercase tracking-[3px] text-gold border border-gold/20 px-5 py-2 hover:bg-gold hover:text-black transition-all">
+              <Link
+                to="/admin"
+                className="text-[10px] font-bold uppercase tracking-[3px] text-gold border border-gold/20 px-5 py-2 hover:bg-gold hover:text-black transition-all"
+              >
                 Admin
               </Link>
             )}
@@ -159,6 +243,7 @@ const Navbar = () => {
 
           {/* Right: Icons */}
           <div className="flex items-center gap-5 lg:gap-7">
+
             <button
               className="text-ivory hover:text-gold transition-colors hidden sm:block"
               onClick={() => setSearchOpen(prev => !prev)}
@@ -172,41 +257,72 @@ const Navbar = () => {
                 onClick={() => !user && navigate('/login')}
               >
                 <User size={20} />
-                {user && <span className="text-[9px] font-bold uppercase tracking-[2px] hidden md:block max-w-[80px] truncate">{user.name}</span>}
+
+                {user && (
+                  <span className="text-[9px] font-bold uppercase tracking-[2px] hidden md:block max-w-[80px] truncate">
+                    {user.name}
+                  </span>
+                )}
               </button>
 
               {user && (
                 <div className="absolute top-full right-0 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                   <div className="bg-black-2 border border-gold/20 min-w-[200px] shadow-2xl rounded-sm py-4">
+
                     <div className="px-6 py-3 border-b border-gold/10 mb-2">
-                      <p className="text-[9px] text-gold font-bold uppercase tracking-[3px]">Signed In As</p>
-                      <p className="text-xs font-bold text-ivory truncate uppercase mt-1 tracking-widest">{user.name}</p>
+                      <p className="text-[9px] text-gold font-bold uppercase tracking-[3px]">
+                        Signed In As
+                      </p>
+
+                      <p className="text-xs font-bold text-ivory truncate uppercase mt-1 tracking-widest">
+                        {user.name}
+                      </p>
                     </div>
 
-                    <Link to="/profile" className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-ivory/60 hover:text-gold hover:bg-gold/5 transition-all">
+                    <Link
+                      to="/profile"
+                      className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-ivory/60 hover:text-gold hover:bg-gold/5 transition-all"
+                    >
                       My Profile
                     </Link>
-                    <Link to="/orders" className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-ivory/60 hover:text-gold hover:bg-gold/5 transition-all">
+
+                    <Link
+                      to="/orders"
+                      className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-ivory/60 hover:text-gold hover:bg-gold/5 transition-all"
+                    >
                       My Orders
                     </Link>
+
                     {isAdmin && (
-                      <Link to="/admin" className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-gold hover:bg-gold/5 transition-all border-t border-gold/10 mt-2">
+                      <Link
+                        to="/admin"
+                        className="flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-gold hover:bg-gold/5 transition-all border-t border-gold/10 mt-2"
+                      >
                         Admin Panel
                       </Link>
                     )}
+
                     <button
-                      onClick={() => { logout(); navigate('/'); }}
+                      onClick={() => {
+                        logout();
+                        navigate('/');
+                      }}
                       className="w-full flex items-center gap-3 px-6 py-3 text-[10px] font-bold uppercase tracking-[2px] text-luxury-red hover:bg-luxury-red/5 transition-all border-t border-gold/10 mt-2"
                     >
                       Sign Out
                     </button>
+
                   </div>
                 </div>
               )}
             </div>
 
-            <Link to="/wishlist" className="text-ivory hover:text-gold transition-colors hidden sm:block relative">
+            <Link
+              to="/wishlist"
+              className="text-ivory hover:text-gold transition-colors hidden sm:block relative"
+            >
               <Heart size={20} />
+
               {user?.wishlist?.length > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-luxury-red text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {user.wishlist.length}
@@ -219,12 +335,14 @@ const Navbar = () => {
               className="text-ivory hover:text-gold transition-colors relative"
             >
               <ShoppingBag size={20} />
+
               {cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-gold text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </button>
+
           </div>
         </div>
 
@@ -236,6 +354,7 @@ const Navbar = () => {
           >
             <div className="container flex items-center gap-4">
               <Search size={15} className="text-gold/40 shrink-0" />
+
               <input
                 autoFocus
                 type="text"
@@ -244,9 +363,13 @@ const Navbar = () => {
                 placeholder="Search fragrances, brands..."
                 className="flex-1 bg-transparent text-ivory text-sm outline-none placeholder-ivory/30 tracking-wider py-1"
               />
+
               <button
                 type="button"
-                onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+                onClick={() => {
+                  setSearchOpen(false);
+                  setSearchQuery('');
+                }}
                 className="text-ivory/30 hover:text-gold transition-colors"
               >
                 <X size={16} />
@@ -256,46 +379,149 @@ const Navbar = () => {
         )}
 
         {/* Mobile Drawer */}
-        <div className={`fixed inset-0 bg-black/95 z-[100] transition-transform duration-500 lg:hidden ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} backdrop-blur-xl`}>
+        <div
+          className={`fixed inset-0 bg-black/95 z-[100] transition-transform duration-500 lg:hidden ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            } backdrop-blur-xl`}
+        >
           <div className="p-8 flex flex-col h-full">
+
             <div className="flex justify-between items-center mb-16">
-              <span className="font-heading text-2xl tracking-[4px] text-gold">INERRANCY</span>
-              <button onClick={() => setMobileMenuOpen(false)} className="text-ivory hover:text-gold transition-colors"><X size={32} /></button>
+              <span className="font-heading text-2xl tracking-[4px] text-gold">
+                INERRANCY
+              </span>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setMobileCategoriesOpen(false);
+                }}
+                className="text-ivory hover:text-gold transition-colors"
+              >
+                <X size={32} />
+              </button>
             </div>
-            <div className="flex flex-col gap-8">
+
+            <div className="flex flex-col gap-8 flex-1 min-h-0 overflow-y-auto pr-2">
+
               {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path || '/shop'}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`text-2xl font-heading tracking-widest uppercase border-b border-gold/10 pb-4 transition-colors flex items-center gap-3 ${link.ai ? 'text-gold' : 'text-ivory hover:text-gold'}`}
-                >
-                  {link.ai && <Sparkles size={20} />}
-                  {link.name}
-                </Link>
+                link.name === 'Categories' ? (
+                  <div key={link.name}>
+
+                    <button
+                      type="button"
+                      onClick={() => setMobileCategoriesOpen(prev => !prev)}
+                      className="w-full text-2xl font-heading tracking-widest uppercase border-b border-gold/10 pb-4 transition-colors flex items-center justify-between text-ivory hover:text-gold"
+                    >
+                      <span>Categories</span>
+
+                      <ChevronDown
+                        size={20}
+                        className={`transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-180' : ''
+                          }`}
+                      />
+                    </button>
+
+                    {mobileCategoriesOpen && (
+                      <div className="flex flex-col gap-5 pl-5 pt-6">
+
+                        {navBrands.map((brand, idx) => (
+                          <Link
+                            key={idx}
+                            to={getCategoryPath(brand)}
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              setMobileCategoriesOpen(false);
+                            }}
+                            className="flex items-center justify-between gap-3 text-sm font-heading tracking-widest uppercase text-ivory/70 hover:text-gold transition-colors"
+                          >
+                            <span>{brand}</span>
+
+                            {(brand === 'Sports' || brand === 'Digital Media') && (
+                              <span className="text-[8px] text-gold border border-gold/30 px-2 py-1 whitespace-nowrap">
+                                Coming Soon
+                              </span>
+                            )}
+                          </Link>
+                        ))}
+
+                      </div>
+                    )}
+
+                  </div>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setMobileCategoriesOpen(false);
+                    }}
+                    className={`text-2xl font-heading tracking-widest uppercase border-b border-gold/10 pb-4 transition-colors flex items-center gap-3 ${link.ai ? 'text-gold' : 'text-ivory hover:text-gold'
+                      }`}
+                  >
+                    {link.ai && <Sparkles size={20} />}
+                    {link.name}
+                  </Link>
+                )
               ))}
+
               {isAdmin && (
-                <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-heading tracking-widest uppercase text-gold">
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl font-heading tracking-widest uppercase text-gold"
+                >
                   Admin Panel
                 </Link>
               )}
+
             </div>
+
             <div className="mt-auto pb-10 border-t border-gold/10 pt-10">
+
               {user ? (
                 <>
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 rounded-full border border-gold/20 flex items-center justify-center text-gold font-bold">{user.name[0]}</div>
-                    <div>
-                      <p className="text-xs font-bold text-ivory uppercase tracking-widest">{user.name}</p>
-                      <button onClick={() => { logout(); setMobileMenuOpen(false); navigate('/'); }} className="text-[10px] text-luxury-red uppercase font-bold tracking-[2px] mt-1 underline">Sign Out</button>
+
+                    <div className="w-12 h-12 rounded-full border border-gold/20 flex items-center justify-center text-gold font-bold">
+                      {user.name[0]}
                     </div>
+
+                    <div>
+                      <p className="text-xs font-bold text-ivory uppercase tracking-widest">
+                        {user.name}
+                      </p>
+
+                      <button
+                        onClick={() => {
+                          logout();
+                          setMobileMenuOpen(false);
+                          navigate('/');
+                        }}
+                        className="text-[10px] text-luxury-red uppercase font-bold tracking-[2px] mt-1 underline"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+
                   </div>
                 </>
               ) : (
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary w-full py-4 text-[10px] font-bold tracking-[3px] uppercase mb-8">Sign In</Link>
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="btn btn-primary w-full py-4 text-[10px] font-bold tracking-[3px] uppercase mb-8"
+                >
+                  Sign In
+                </Link>
               )}
-              <p className="text-[10px] text-ivory/20 uppercase tracking-[4px] font-bold mb-4">The House of Luxury</p>
+
+              <p className="text-[10px] text-ivory/20 uppercase tracking-[4px] font-bold mb-4">
+                The House of Luxury
+              </p>
+
               <div className="w-12 h-0.5 bg-gold/20" />
+
             </div>
           </div>
         </div>

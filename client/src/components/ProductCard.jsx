@@ -91,7 +91,7 @@ const ProductCard = ({ product }) => {
       <div className="mt-5 text-center px-2">
         <p className="text-[10px] text-gold font-bold tracking-[4px] uppercase mb-1.5">{product.brand}</p>
         <Link to={`/product/${product._id}`}>
-          <h3 className="font-heading text-xl lg:text-2xl text-ivory hover:text-gold transition-colors mb-2.5 truncate">
+          <h3 className="font-heading text-xl lg:text-4xl text-ivory hover:text-gold transition-colors mb-2.5 truncate">
             {product.name}
           </h3>
         </Link>
